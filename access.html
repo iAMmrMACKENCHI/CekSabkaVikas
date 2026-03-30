@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>My Access — Physics with Vikas</title>
+<link rel="manifest" href="manifest.json"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>*{font-family:'Space Grotesk',sans-serif}.hero-font{font-family:'Syne',sans-serif}.grad{background:linear-gradient(160deg,#0f172a 0%,#0c1f35 100%)}</style>
+</head>
+<body class="grad min-h-screen text-white pb-24">
+<div class="max-w-sm mx-auto px-5">
+  <div class="flex items-center gap-3 pt-8 pb-5">
+    <a href="dashboard.html" class="text-slate-400">←</a>
+    <h1 class="hero-font text-xl font-extrabold">My Course Access</h1>
+  </div>
+
+  <!-- Status Card -->
+  <div id="accessCard" class="bg-white/4 border border-white/8 rounded-2xl p-5 mb-5">
+    <div class="flex items-center gap-3 mb-4">
+      <div id="statusIcon" class="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-2xl">⏳</div>
+      <div>
+        <div id="statusTitle" class="font-bold text-base">Verification Pending</div>
+        <div id="statusSub" class="text-xs text-slate-400">Usually verified within 2–4 hours</div>
+      </div>
+    </div>
+
+    <!-- Access Granted State (hidden by default) -->
+    <div id="accessGranted" style="display:none">
+      <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-4">
+        <p class="text-green-300 text-sm font-semibold mb-1">✅ Access Granted!</p>
+        <p class="text-green-200/70 text-xs">You now have lifetime access to the full course.</p>
+      </div>
+      <a id="driveLink" href="#" target="_blank" class="block bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-2xl text-center text-sm transition mb-3" style="box-shadow:0 0 20px rgba(2,132,199,0.4)">
+        📁 Open Google Drive Course Folder
+      </a>
+    </div>
+
+    <!-- Pending State -->
+    <div id="pendingState">
+      <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+        <p class="text-amber-300 text-xs leading-relaxed">
+          Our admin is verifying your UPI payment. Once verified, you'll receive a Google Drive access invite on your registered email.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enrollment Details -->
+  <div class="bg-white/4 border border-white/8 rounded-2xl p-5 mb-5">
+    <h2 class="hero-font font-bold text-sm mb-4 uppercase tracking-wide text-slate-300">Enrollment Details</h2>
+    <div class="space-y-3 text-sm">
+      <div class="flex justify-between"><span class="text-slate-400">Name</span><span id="detailName" class="font-semibold">—</span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Email</span><span id="detailEmail" class="font-semibold text-xs">—</span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Course</span><span class="font-semibold text-sky-400">Mechanics Series</span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Amount</span><span class="font-semibold text-green-400">₹999</span></div>
+    </div>
+  </div>
+
+  <!-- Help -->
+  <div class="bg-white/4 border border-white/8 rounded-2xl p-5">
+    <h2 class="hero-font font-bold text-sm mb-3">Need Help?</h2>
+    <p class="text-slate-400 text-xs leading-relaxed mb-4">If it's been more than 6 hours and you haven't received access, contact us with your payment screenshot.</p>
+    <a href="https://wa.me/917000000000?text=Hi%20Vikas%20Sir%2C%20I%20paid%20for%20the%20Physics%20course%20but%20haven't%20received%20access." target="_blank" class="block bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl text-center text-sm transition">
+      💬 WhatsApp Support
+    </a>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="fixed bottom-0 left-0 right-0 z-30 px-2 pb-2 pt-1" style="background:rgba(10,17,30,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.06)">
+  <div class="flex justify-around max-w-sm mx-auto">
+    <a href="dashboard.html" class="flex flex-col items-center gap-0.5 p-2 text-slate-400"><span class="text-xl">🏠</span><span class="text-[10px] font-semibold">Home</span></a>
+    <a href="reels.html" class="flex flex-col items-center gap-0.5 p-2 text-slate-400"><span class="text-xl">🎬</span><span class="text-[10px] font-semibold">Reels</span></a>
+    <a href="course.html" class="flex flex-col items-center gap-0.5 p-2 text-slate-400"><span class="text-xl">📚</span><span class="text-[10px] font-semibold">Courses</span></a>
+    <a href="profile.html" class="flex flex-col items-center gap-0.5 p-2 text-slate-400"><span class="text-xl">👤</span><span class="text-[10px] font-semibold">Profile</span></a>
+  </div>
+</nav>
+
+<script src="script.js"></script>
+<script>
+const u = Auth.getUser();
+if(u){
+  document.getElementById("detailName").textContent = u.name || "—";
+  document.getElementById("detailEmail").textContent = u.email || "—";
+  // Check access
+  if(u.hasAccess){
+    document.getElementById("statusIcon").textContent = "✅";
+    document.getElementById("statusIcon").className = "w-12 h-12 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center text-2xl";
+    document.getElementById("statusTitle").textContent = "Access Granted!";
+    document.getElementById("statusSub").textContent = "Lifetime access active";
+    document.getElementById("accessGranted").style.display = "block";
+    document.getElementById("pendingState").style.display = "none";
+    document.getElementById("driveLink").href = APP_CONFIG.DRIVE_LINK;
+  }
+}
+</script>
+</body>
+</html>

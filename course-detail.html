@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Course Detail — Physics with Vikas</title>
+<link rel="manifest" href="manifest.json"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  *{font-family:'Space Grotesk',sans-serif}
+  .hero-font{font-family:'Syne',sans-serif}
+  .grad{background:linear-gradient(160deg,#0f172a 0%,#0c1f35 100%)}
+  .chapter-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+</style>
+</head>
+<body class="grad min-h-screen text-white pb-32">
+
+<!-- Hero -->
+<div class="relative h-52 flex items-center justify-center" style="background:linear-gradient(135deg,#0c2a45,#0f3d60)">
+  <a href="course.html" class="absolute top-4 left-4 w-9 h-9 rounded-full bg-black/30 flex items-center justify-center text-white text-sm">←</a>
+  <span style="font-size:64px">⚡</span>
+  <div class="absolute bottom-4 left-4 right-4">
+    <h1 class="hero-font text-xl font-extrabold">Mechanics — Complete Series</h1>
+    <p class="text-sky-300 text-xs mt-1">Class 11 · 45 Videos · 30+ Hours</p>
+  </div>
+</div>
+
+<div class="px-5 pt-5">
+  <!-- Price bar -->
+  <div class="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-4 flex items-center justify-between mb-5">
+    <div>
+      <div class="text-slate-400 text-xs">Course Price</div>
+      <div class="hero-font text-2xl font-extrabold text-sky-400">₹999</div>
+      <div class="text-slate-400 text-xs">Lifetime Access</div>
+    </div>
+    <a href="buy.html" class="bg-sky-500 hover:bg-sky-400 text-white font-bold px-6 py-3 rounded-xl text-sm transition" style="box-shadow:0 0 20px rgba(2,132,199,0.4)">
+      Buy Now
+    </a>
+  </div>
+
+  <!-- What you get -->
+  <div class="mb-5">
+    <h2 class="hero-font font-bold text-base mb-3">What's Included</h2>
+    <div class="grid grid-cols-2 gap-2 text-sm">
+      <div class="bg-white/4 border border-white/8 rounded-xl p-3 flex items-center gap-2"><span>📹</span> 45 Videos</div>
+      <div class="bg-white/4 border border-white/8 rounded-xl p-3 flex items-center gap-2"><span>⏱</span> 30+ Hours</div>
+      <div class="bg-white/4 border border-white/8 rounded-xl p-3 flex items-center gap-2"><span>📝</span> PYQ Sheet</div>
+      <div class="bg-white/4 border border-white/8 rounded-xl p-3 flex items-center gap-2"><span>📱</span> Mobile Access</div>
+      <div class="bg-white/4 border border-white/8 rounded-xl p-3 flex items-center gap-2"><span>♾</span> Lifetime</div>
+      <div class="bg-white/4 border border-white/8 rounded-xl p-3 flex items-center gap-2"><span>🏆</span> Certificate</div>
+    </div>
+  </div>
+
+  <!-- Syllabus -->
+  <div>
+    <h2 class="hero-font font-bold text-base mb-3">Course Syllabus</h2>
+    <div class="space-y-2" id="syllabusList">
+      <div class="chapter-item"><span class="text-sky-400 font-bold text-xs w-6">01</span><div><div class="text-sm font-semibold">Units & Measurements</div><div class="text-xs text-slate-400">4 videos · 2.5 hrs</div></div><span class="ml-auto text-green-400 text-xs font-bold">FREE</span></div>
+      <div class="chapter-item"><span class="text-sky-400 font-bold text-xs w-6">02</span><div><div class="text-sm font-semibold">Kinematics</div><div class="text-xs text-slate-400">6 videos · 4 hrs</div></div><span class="ml-auto text-slate-500 text-xs">🔒</span></div>
+      <div class="chapter-item"><span class="text-sky-400 font-bold text-xs w-6">03</span><div><div class="text-sm font-semibold">Laws of Motion</div><div class="text-xs text-slate-400">7 videos · 5 hrs</div></div><span class="ml-auto text-slate-500 text-xs">🔒</span></div>
+      <div class="chapter-item"><span class="text-sky-400 font-bold text-xs w-6">04</span><div><div class="text-sm font-semibold">Work, Energy & Power</div><div class="text-xs text-slate-400">5 videos · 3.5 hrs</div></div><span class="ml-auto text-slate-500 text-xs">🔒</span></div>
+      <div class="chapter-item"><span class="text-sky-400 font-bold text-xs w-6">05</span><div><div class="text-sm font-semibold">Rotational Motion</div><div class="text-xs text-slate-400">8 videos · 6 hrs</div></div><span class="ml-auto text-slate-500 text-xs">🔒</span></div>
+      <div class="chapter-item"><span class="text-sky-400 font-bold text-xs w-6">06</span><div><div class="text-sm font-semibold">Gravitation</div><div class="text-xs text-slate-400">5 videos · 3 hrs</div></div><span class="ml-auto text-slate-500 text-xs">🔒</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky CTA -->
+<div class="fixed bottom-0 left-0 right-0 p-4 z-30" style="background:rgba(10,17,30,0.97);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.06)">
+  <a href="buy.html" class="block bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-2xl text-center text-base transition" style="box-shadow:0 0 30px rgba(2,132,199,0.4)">
+    🚀 Enroll Now — ₹999 Only
+  </a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

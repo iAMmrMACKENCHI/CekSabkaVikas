@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Profile — Physics with Vikas</title>
+<link rel="manifest" href="manifest.json"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>*{font-family:'Space Grotesk',sans-serif}.hero-font{font-family:'Syne',sans-serif}.grad{background:linear-gradient(160deg,#0f172a 0%,#0c1f35 100%)}.row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06)}.row:last-child{border:none}</style>
+</head>
+<body class="grad min-h-screen text-white pb-24">
+<div class="max-w-sm mx-auto px-5">
+
+  <!-- Avatar header -->
+  <div class="text-center pt-10 pb-6">
+    <div class="w-20 h-20 rounded-full bg-sky-500/20 border-2 border-sky-500/40 flex items-center justify-center text-4xl mx-auto mb-3">👤</div>
+    <h1 class="hero-font text-xl font-extrabold" id="profName">Student</h1>
+    <p class="text-slate-400 text-sm mt-0.5" id="profPhone">+91 —</p>
+  </div>
+
+  <!-- Details -->
+  <div class="bg-white/4 border border-white/8 rounded-2xl p-5 mb-4">
+    <h2 class="hero-font font-bold text-xs text-slate-400 uppercase tracking-widest mb-2">Account Details</h2>
+    <div class="row"><span class="text-slate-400 text-sm">Email</span><span id="profEmail" class="font-semibold text-xs">—</span></div>
+    <div class="row"><span class="text-slate-400 text-sm">Class</span><span id="profClass" class="font-semibold text-sm">—</span></div>
+    <div class="row"><span class="text-slate-400 text-sm">Status</span><span id="profStatus" class="text-amber-400 font-bold text-xs">Free Tier</span></div>
+  </div>
+
+  <!-- Menu -->
+  <div class="bg-white/4 border border-white/8 rounded-2xl p-1 mb-4">
+    <a href="access.html" class="flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 transition">
+      <span class="text-xl">📁</span>
+      <div class="flex-1"><div class="font-semibold text-sm">My Course Access</div><div class="text-xs text-slate-400">View enrolled courses</div></div>
+      <span class="text-slate-500">›</span>
+    </a>
+    <div style="height:1px;background:rgba(255,255,255,0.06);margin:0 16px"></div>
+    <a href="buy.html" class="flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 transition">
+      <span class="text-xl">🚀</span>
+      <div class="flex-1"><div class="font-semibold text-sm">Buy a Course</div><div class="text-xs text-slate-400">₹999 lifetime access</div></div>
+      <span class="text-slate-500">›</span>
+    </a>
+    <div style="height:1px;background:rgba(255,255,255,0.06);margin:0 16px"></div>
+    <a href="https://wa.me/917000000000" target="_blank" class="flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 transition">
+      <span class="text-xl">💬</span>
+      <div class="flex-1"><div class="font-semibold text-sm">WhatsApp Support</div><div class="text-xs text-slate-400">Get help instantly</div></div>
+      <span class="text-slate-500">›</span>
+    </a>
+  </div>
+
+  <!-- Logout -->
+  <button onclick="Auth.logout()" class="w-full bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 font-bold py-4 rounded-2xl text-sm transition">
+    🚪 Logout
+  </button>
+
+  <p class="text-center text-slate-600 text-xs mt-6">Physics with Vikas · v1.0</p>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="fixed bottom-0 left-0 right-0 z-30 px-2 pb-2 pt-1" style="background:rgba(10,17,30,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.06)">
+  <div class="flex justify-around max-w-sm mx-auto">
+    <a href="dashboard.html" class="flex flex-col items-center gap-0.5 p-2 text-slate-400"><span class="text-xl">🏠</span><span class="text-[10px] font-semibold">Home</span></a>
+    <a href="reels.html" class="flex flex-col items-center gap-0.5 p-2 text-slate-400"><span class="text-xl">🎬</span><span class="text-[10px] font-semibold">Reels</span></a>
+    <a href="course.html" class="flex flex-col items-center gap-0.5 p-2 text-slate-400"><span class="text-xl">📚</span><span class="text-[10px] font-semibold">Courses</span></a>
+    <a href="profile.html" class="flex flex-col items-center gap-0.5 p-2 text-sky-400"><span class="text-xl">👤</span><span class="text-[10px] font-semibold">Profile</span></a>
+  </div>
+</nav>
+
+<script src="script.js"></script>
+<script>
+if(!Auth.require()) throw 0;
+const u = Auth.getUser();
+document.getElementById("profName").textContent = u.name || "Student";
+document.getElementById("profPhone").textContent = u.phone ? "+91 " + u.phone : "—";
+document.getElementById("profEmail").textContent = u.email || "—";
+document.getElementById("profClass").textContent = u.class ? "Class " + u.class : "—";
+if(u.hasAccess) document.getElementById("profStatus").textContent = "✅ Full Access";
+</script>
+</body>
+</html>

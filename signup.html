@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sign Up — Physics with Vikas</title>
+<link rel="manifest" href="manifest.json"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  *{font-family:'Space Grotesk',sans-serif}
+  .hero-font{font-family:'Syne',sans-serif}
+  .grad{background:linear-gradient(135deg,#0f172a 0%,#0c2340 60%,#0f2c50 100%)}
+  .input-field{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:1rem;padding:14px 16px;width:100%;font-size:15px;outline:none;transition:border .2s}
+  .input-field:focus{border-color:#0284C7;background:rgba(2,132,199,0.08)}
+  .input-field::placeholder{color:rgba(255,255,255,0.3)}
+  select.input-field option{background:#0f172a;color:#fff}
+</style>
+</head>
+<body class="grad min-h-screen text-white">
+<div class="max-w-sm mx-auto px-6 pt-10 pb-24">
+
+  <!-- Back -->
+  <a href="index.html" class="flex items-center gap-2 text-slate-400 text-sm mb-8 hover:text-white transition">
+    ← Back
+  </a>
+
+  <div class="text-center mb-8">
+    <div class="w-14 h-14 rounded-2xl bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-3xl mx-auto mb-4">⚛</div>
+    <h1 class="hero-font text-2xl font-extrabold mb-1">Create Account</h1>
+    <p class="text-slate-400 text-sm">Join 500+ physics students</p>
+  </div>
+
+  <form id="signupForm" class="space-y-4">
+    <div>
+      <label class="text-xs text-slate-400 mb-1.5 block font-semibold uppercase tracking-wide">Full Name</label>
+      <input type="text" id="name" class="input-field" placeholder="Your name" required/>
+    </div>
+    <div>
+      <label class="text-xs text-slate-400 mb-1.5 block font-semibold uppercase tracking-wide">Phone Number</label>
+      <input type="tel" id="phone" class="input-field" placeholder="10-digit mobile number" maxlength="10" required/>
+    </div>
+    <div>
+      <label class="text-xs text-slate-400 mb-1.5 block font-semibold uppercase tracking-wide">Email Address</label>
+      <input type="email" id="email" class="input-field" placeholder="you@example.com" required/>
+    </div>
+    <div>
+      <label class="text-xs text-slate-400 mb-1.5 block font-semibold uppercase tracking-wide">Class</label>
+      <select id="class" class="input-field">
+        <option value="11">Class 11</option>
+        <option value="12">Class 12</option>
+        <option value="dropper">Dropper</option>
+      </select>
+    </div>
+    <button type="submit" id="submitBtn" class="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-2xl text-base transition mt-2" style="box-shadow:0 0 30px rgba(2,132,199,0.4)">
+      Create Account →
+    </button>
+  </form>
+
+  <p class="text-center text-slate-400 text-sm mt-6">
+    Already have an account? <a href="login.html" class="text-sky-400 font-semibold hover:text-sky-300">Login</a>
+  </p>
+</div>
+
+<script src="script.js"></script>
+<script>
+if(Auth.getUser()) window.location.href="dashboard.html";
+
+document.getElementById("signupForm").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const btn = document.getElementById("submitBtn");
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const cls = document.getElementById("class").value;
+
+  if(phone.length !== 10 || !/^\d+$/.test(phone)){
+    showToast("Enter a valid 10-digit phone number","error"); return;
+  }
+
+  setLoading(btn, true);
+  const result = await postToSheet("signup", {
+    name, phone, email,
+    class: cls,
+    created_at: new Date().toISOString()
+  });
+
+  // Save locally (sheet may fail in dev — we still proceed)
+  Auth.setUser({ name, phone, email, class: cls, hasAccess: false });
+  showToast("Account created! Welcome 🎉","success");
+  setTimeout(()=> window.location.href="dashboard.html", 1200);
+});
+</script>
+</body>
+</html>

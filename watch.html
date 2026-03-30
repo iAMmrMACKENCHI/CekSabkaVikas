@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Watch — Physics with Vikas</title>
+<link rel="manifest" href="manifest.json"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>*{font-family:'Space Grotesk',sans-serif}.hero-font{font-family:'Syne',sans-serif}.grad{background:linear-gradient(160deg,#0f172a 0%,#0c1f35 100%)}</style>
+</head>
+<body class="grad min-h-screen text-white pb-8">
+
+<!-- Video Player -->
+<div class="w-full bg-black relative" style="padding-top:56.25%">
+  <iframe id="videoFrame" class="absolute inset-0 w-full h-full" src="" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<!-- Info -->
+<div class="px-5 pt-4">
+  <div class="flex items-center gap-3 mb-4">
+    <a href="reels.html" class="text-slate-400 text-sm hover:text-white">← Back to Reels</a>
+  </div>
+  <h1 class="hero-font text-xl font-extrabold mb-1" id="videoTitle">Loading...</h1>
+  <div class="flex gap-2 mb-4">
+    <span id="videoClass" class="bg-sky-500/15 text-sky-300 text-xs px-2.5 py-1 rounded-full font-semibold">—</span>
+    <span id="videoDiff" class="bg-white/10 text-white text-xs px-2.5 py-1 rounded-full font-semibold">—</span>
+  </div>
+
+  <!-- Tags -->
+  <div id="videoTags" class="flex flex-wrap gap-2 mb-5"></div>
+
+  <!-- CTA -->
+  <div class="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-4 mb-4">
+    <p class="text-sm font-semibold mb-1 text-sky-300">Want the full lecture on this topic?</p>
+    <p class="text-xs text-slate-400 mb-3">Get complete series with solved numericals and PYQs.</p>
+    <a href="buy.html" class="block bg-sky-500 text-white font-bold py-3 rounded-xl text-center text-sm transition hover:bg-sky-400">
+      🚀 Get Full Course — ₹999
+    </a>
+  </div>
+
+  <!-- Related (static) -->
+  <h2 class="hero-font font-bold text-sm mb-3">More Like This</h2>
+  <div class="space-y-2" id="relatedList">
+    <a href="reels.html" class="flex items-center gap-3 bg-white/4 border border-white/8 rounded-xl p-3">
+      <div class="w-10 h-10 rounded-lg bg-sky-500/20 flex items-center justify-center text-lg">⚡</div>
+      <div><div class="text-sm font-semibold">Newton's Laws</div><div class="text-xs text-slate-400">2 min · Class 11</div></div>
+    </a>
+    <a href="reels.html" class="flex items-center gap-3 bg-white/4 border border-white/8 rounded-xl p-3">
+      <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-lg">🌊</div>
+      <div><div class="text-sm font-semibold">Projectile Motion</div><div class="text-xs text-slate-400">3 min · Class 11</div></div>
+    </a>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+const reel = MOCK_REELS.find(r=>r.id===id) || MOCK_REELS[0];
+if(reel){
+  document.getElementById("videoFrame").src = reel.videoUrl + "?autoplay=1&rel=0";
+  document.getElementById("videoTitle").textContent = reel.topic;
+  document.getElementById("videoClass").textContent = "Class " + reel.class;
+  document.getElementById("videoDiff").textContent = reel.difficulty;
+  document.getElementById("videoTags").innerHTML = reel.tags.map(t=>`<span style="background:rgba(2,132,199,0.15);border:1px solid rgba(2,132,199,0.3);color:#7dd3fc;font-size:11px;padding:3px 10px;border-radius:99px;font-weight:600">${t}</span>`).join("");
+}
+</script>
+</body>
+</html>

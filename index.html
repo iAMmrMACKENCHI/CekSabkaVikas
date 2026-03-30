@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Physics with Vikas</title>
+<link rel="manifest" href="manifest.json"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+  *{font-family:'Space Grotesk',sans-serif}
+  .hero-font{font-family:'Syne',sans-serif}
+  .grad{background:linear-gradient(135deg,#0f172a 0%,#0c2340 60%,#0f2c50 100%)}
+  .glow{box-shadow:0 0 40px rgba(2,132,199,0.35)}
+  .particle{position:absolute;border-radius:50%;background:rgba(2,132,199,0.12);animation:float 6s infinite ease-in-out}
+  @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
+  .shimmer{background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);background-size:200%;animation:shimmer 2s infinite}
+  @keyframes shimmer{0%{background-position:200%}100%{background-position:-200%}}
+  .card-hover{transition:transform .25s,box-shadow .25s}
+  .card-hover:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(2,132,199,0.25)}
+</style>
+</head>
+<body class="grad min-h-screen text-white overflow-x-hidden">
+
+<!-- Decorative particles -->
+<div class="particle w-64 h-64 top-10 -left-20" style="animation-delay:0s"></div>
+<div class="particle w-40 h-40 top-1/3 -right-10" style="animation-delay:2s"></div>
+<div class="particle w-24 h-24 bottom-20 left-10" style="animation-delay:4s"></div>
+
+<!-- Header -->
+<header class="relative z-10 flex items-center justify-between px-6 pt-8 pb-4">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-sky-500 flex items-center justify-center text-white font-bold text-lg glow">⚛</div>
+    <span class="hero-font text-lg font-bold tracking-tight">Physics<span class="text-sky-400">Vikas</span></span>
+  </div>
+  <a href="login.html" class="text-sm text-sky-400 font-semibold border border-sky-500/40 px-4 py-1.5 rounded-full hover:bg-sky-500/10 transition">Login</a>
+</header>
+
+<!-- Hero -->
+<section class="relative z-10 px-6 pt-14 pb-10 text-center">
+  <div class="inline-block bg-sky-500/15 border border-sky-500/30 text-sky-300 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 tracking-wide uppercase">
+    🚀 JEE & NEET Physics
+  </div>
+  <h1 class="hero-font text-4xl font-extrabold leading-tight mb-4">
+    Master Physics<br/><span class="text-sky-400">with Vikas Sir</span>
+  </h1>
+  <p class="text-slate-400 text-base leading-relaxed max-w-xs mx-auto mb-10">
+    Concept-first teaching. Short reels. Deep courses. Crack JEE & NEET with confidence.
+  </p>
+  <div class="flex flex-col gap-3 max-w-xs mx-auto">
+    <a href="signup.html" class="bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-2xl text-base transition glow">
+      Get Started Free →
+    </a>
+    <a href="reels.html" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold py-4 rounded-2xl text-base transition">
+      🎬 Watch Free Reels
+    </a>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="relative z-10 px-6 pb-10">
+  <div class="grid grid-cols-3 gap-3 max-w-sm mx-auto">
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center card-hover">
+      <div class="text-2xl font-extrabold text-sky-400 hero-font">500+</div>
+      <div class="text-xs text-slate-400 mt-1">Students</div>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center card-hover">
+      <div class="text-2xl font-extrabold text-sky-400 hero-font">200+</div>
+      <div class="text-xs text-slate-400 mt-1">Reels</div>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center card-hover">
+      <div class="text-2xl font-extrabold text-sky-400 hero-font">98%</div>
+      <div class="text-xs text-slate-400 mt-1">Results</div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="relative z-10 px-6 pb-20">
+  <h2 class="hero-font text-xl font-bold text-center mb-6">Why Students Love Us</h2>
+  <div class="space-y-4 max-w-sm mx-auto">
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex gap-4 card-hover">
+      <div class="text-3xl">🎯</div>
+      <div>
+        <div class="font-bold text-sm mb-1">Concept-First Approach</div>
+        <div class="text-slate-400 text-xs leading-relaxed">Not just formulas — deep understanding of WHY physics works.</div>
+      </div>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex gap-4 card-hover">
+      <div class="text-3xl">📱</div>
+      <div>
+        <div class="font-bold text-sm mb-1">Short Reels Feed</div>
+        <div class="text-slate-400 text-xs leading-relaxed">Learn in 60-second bursts. Physics in your pocket, always.</div>
+      </div>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-5 flex gap-4 card-hover">
+      <div class="text-3xl">💸</div>
+      <div>
+        <div class="font-bold text-sm mb-1">Affordable Pricing</div>
+        <div class="text-slate-400 text-xs leading-relaxed">Full course access at the price of a textbook. UPI payment.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bottom CTA -->
+<div class="fixed bottom-0 left-0 right-0 z-20 p-4 bg-gradient-to-t from-slate-950 to-transparent">
+  <a href="signup.html" class="block bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-2xl text-center text-base transition glow max-w-sm mx-auto">
+    Join Free — Start Learning
+  </a>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Redirect if already logged in
+  if(Auth.getUser()) window.location.href = "dashboard.html";
+</script>
+</body>
+</html>
