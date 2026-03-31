@@ -6,8 +6,8 @@ const APP_CONFIG = {
   APP_NAME: "Physics with Vikas",
   UPI_ID: "vikas@upi",           // REPLACE with real UPI ID
   COURSE_PRICE: "₹999",
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec", // REPLACE
-  DRIVE_LINK: "https://drive.google.com/drive/folders/YOUR_FOLDER_ID",           // REPLACE
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx40MEA-AEFiQu_pT-sMp3E_Su3CM4V-dLQ6hHDHyjCzNqHk_UFUqWveQJb2JJF5dkB/exec", // REPLACE
+  DRIVE_LINK: "https://drive.google.com/drive/u/0/folders/1Z_jJbShQ0povcJNdSyAm05UocDx6sg_7",           // REPLACE
 };
 
 // ──────────────────────────────────────────
