@@ -108,7 +108,7 @@ button:focus-visible{outline:3px solid rgba(8,8,8,.35);outline-offset:2px}
 
 <script>
 // ===== CONFIG: edit these =====
-var CEK_API = 'script.google.com/macros/s/AKfycbxgPnf-WyaL1WkMFAAG_bZ6NyGRSjM9GOOzw1jPw8zrtuOU17caEKqkoe8iFbyzvtdR/exec';
+var CEK_API = 'https://script.google.com/macros/s/AKfycbxgPnf-WyaL1WkMFAAG_bZ6NyGRSjM9GOOzw1jPw8zrtuOU17caEKqkoe8iFbyzvtdR/exec';
 var TEACHER_WHATSAPP = '';      // e.g. '919876543210' (no +). Empty hides the button.
 var FEE_TEXT = 'The online batch is ₹2499 for 3 months.';   // change the offer text here
 var BATCH_TEXT = '<b>Batch:</b> starts soon. Demo class details will come on WhatsApp.';
@@ -306,7 +306,14 @@ function api(action, data, ok, fail) {
   fetch(CEK_API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) })
     .then(function (r) { return r.json(); })
     .then(function (res) { if (!done) { done = true; clearTimeout(timer); ok(res); } })
-    .catch(function () { if (!done) { done = true; clearTimeout(timer); fail(); } });
+    .catch(function () {
+      if (done) return; done = true; clearTimeout(timer);
+      // Browser blocked the reply (CORS). For leads only, send once more without reading the reply.
+      if (action === 'submitLead') {
+        fetch(CEK_API, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) })
+          .then(function () { ok({ success: true, unverified: true }); }, function () { fail(); });
+      } else fail();
+    });
 }
 function payload(complete) {
   return { leadId: leadId, complete: complete, studentClass: S.class.join(', '), board: withOther('board'), medium: withOther('medium'),
