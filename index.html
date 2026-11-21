@@ -4,974 +4,369 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CeK Classes · Find Your Batch</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  /* ===== CeK brand tokens: 85% white, 10% black, 5% red ===== */
-  :root {
-    --black: #080808;
-    --red: #E50914;
-    --red-dark: #C20710;
-    --white: #FFFFFF;
-    --grey-bg: #F5F5F5;
-    --text: #292929;
-    --muted: #6B6B6B;
-    --border: #E5E5E5;
-    --radius: 14px;
-    --font: "Inter", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--grey-bg); }
-  body {
-    font-family: var(--font);
-    color: var(--text);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-  }
-  .app {
-    width: 100%;
-    max-width: 480px;
-    min-height: 100vh;
-    background: var(--white);
-    display: flex;
-    flex-direction: column;
-    padding: 0 20px;
-  }
-  @media (min-width: 520px) {
-    body { padding: 24px 0; }
-    .app { min-height: 0; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 8px 30px rgba(0,0,0,.06); }
-  }
-
-  /* ===== Header + progress ===== */
-  .top { padding-top: 18px; }
-  .brand { display: flex; align-items: center; justify-content: space-between; }
-  .brand img { height: 34px; width: auto; display: block; }
-  .lang { display: flex; gap: 2px; padding: 3px; border: 1.5px solid var(--border); border-radius: 999px; }
-  .lang button { font: inherit; font-size: .8rem; font-weight: 700; border: 0; background: transparent; color: var(--muted); padding: 6px 12px; min-height: 32px; border-radius: 999px; cursor: pointer; transition: background .15s, color .15s; }
-  .lang button[aria-pressed="true"] { background: var(--black); color: var(--white); }
-  .eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-  html[lang="hi"] h1, html[lang="hi"] h2 { line-height: 1.4; }
-  html[lang="hi"] .chip, html[lang="hi"] .btn { line-height: 1.5; }
-  .progress { margin-top: 18px; display: none; }
-  .progress.on { display: block; }
-  .progress-meta { display: flex; justify-content: space-between; font-size: .75rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-  .progress-meta .pct { color: var(--muted); font-weight: 500; }
-  .segs { display: flex; gap: 6px; }
-  .seg { flex: 1; height: 4px; border-radius: 4px; background: var(--border); transition: background .25s; }
-  .seg.done { background: var(--red); }
-
-  /* ===== Steps ===== */
-  main { flex: 1; padding: 22px 0 8px; }
-  .step { display: none; animation: rise .28s ease both; }
-  .step.active { display: block; }
-  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .step { animation: none; } }
-
-  h1 { font-size: 1.7rem; line-height: 1.2; font-weight: 800; color: var(--black); letter-spacing: -.02em; text-wrap: balance; }
-  h2 { font-size: 1.35rem; line-height: 1.25; font-weight: 800; color: var(--black); letter-spacing: -.015em; }
-  .sub { color: var(--muted); font-size: .95rem; margin-top: 6px; }
-  .dot { display: inline-block; width: .42em; height: .42em; border-radius: 50%; background: var(--red); margin-left: .12em; vertical-align: baseline; }
-
-  /* intro */
-  .hero { padding-top: 26px; }
-  .facts { list-style: none; margin: 22px 0 6px; display: grid; gap: 10px; }
-  .facts li { display: flex; gap: 12px; align-items: flex-start; font-size: .95rem; padding: 12px 14px; background: var(--grey-bg); border-radius: var(--radius); }
-  .facts li::before { content: ""; flex: none; width: 8px; height: 8px; margin-top: .5em; border-radius: 50%; background: var(--red); }
-  .facts b { color: var(--black); }
-
-  /* questions */
-  .q { margin-top: 26px; }
-  .q:first-of-type { margin-top: 20px; }
-  .q > label, .q > .label { display: block; font-size: .95rem; font-weight: 700; color: var(--black); margin-bottom: 4px; }
-  .hint { font-size: .8rem; color: var(--muted); margin-bottom: 10px; }
-  .opt { font-weight: 500; color: var(--muted); font-size: .8rem; }
-
-  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
-  .chip {
-    font: inherit; font-size: .92rem; font-weight: 600; color: var(--text);
-    background: var(--white); border: 1.5px solid var(--border); border-radius: 12px;
-    padding: 11px 16px; cursor: pointer; min-height: 46px;
-    transition: border-color .15s, background .15s, color .15s, transform .08s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .chip:hover { border-color: #bdbdbd; }
-  .chip:active { transform: scale(.97); }
-  .chip[aria-pressed="true"] { background: var(--black); border-color: var(--black); color: var(--white); }
-  .chip[aria-pressed="true"]::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 9px; border-radius: 50%; background: var(--red); vertical-align: middle; }
-  .chip.wide { flex: 1 1 100%; text-align: left; }
-  .chips.invalid .chip[aria-pressed="false"] { border-color: var(--red); }
-
-  input[type="text"], input[type="tel"], input[type="email"], input[type="password"], input[type="time"] {
-    width: 100%; font: inherit; font-size: 1rem; color: var(--black);
-    background: var(--white); border: 1.5px solid var(--border); border-radius: 12px;
-    padding: 13px 14px; min-height: 50px; outline: none;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  input::placeholder { color: #9a9a9a; }
-  input:focus { border-color: var(--black); box-shadow: 0 0 0 3px rgba(8,8,8,.08); }
-  input.invalid { border-color: var(--red); box-shadow: 0 0 0 3px rgba(229,9,20,.12); }
-  .other-box { margin-top: 10px; display: none; }
-  .other-box.show { display: block; }
-  .timerow { display: flex; gap: 12px; flex-wrap: wrap; }
-  .timerow label { flex: 1 1 140px; display: block; font-size: .8rem; font-weight: 600; color: var(--muted); }
-  .timerow input { margin-top: 6px; }
-  .err { color: var(--red); font-size: .8rem; font-weight: 600; margin-top: 6px; min-height: 1.1em; }
-
-  .pwwrap { position: relative; }
-  .pwwrap input { padding-right: 84px; }
-  .eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font: inherit; font-size: .8rem; font-weight: 700; color: var(--muted); background: none; border: 0; padding: 8px 10px; cursor: pointer; border-radius: 8px; }
-  .eye:hover { color: var(--black); }
-
-  .privacy { display: flex; gap: 10px; align-items: flex-start; font-size: .78rem; color: var(--muted); margin-top: 22px; padding: 12px 14px; background: var(--grey-bg); border-radius: var(--radius); }
-  .privacy svg { flex: none; margin-top: 2px; }
-
-  /* ===== Footer buttons ===== */
-  .actions { padding: 14px 0 calc(18px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 6px; position: sticky; bottom: 0; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 28%); }
-  .btn {
-    font: inherit; font-weight: 700; font-size: 1rem; width: 100%; min-height: 54px;
-    border: 0; border-radius: 999px; cursor: pointer; transition: background .15s, transform .08s, opacity .15s;
-  }
-  .btn:active { transform: scale(.985); }
-  .btn.primary { background: var(--red); color: var(--white); }
-  .btn.primary:hover { background: var(--red-dark); }
-  .btn.primary[disabled] { opacity: .6; cursor: progress; }
-  .btn.ghost { background: transparent; color: var(--muted); font-weight: 600; font-size: .9rem; min-height: 40px; }
-  .btn.ghost:hover { color: var(--black); }
-  .btn.dark { background: var(--black); color: var(--white); }
-  button:focus-visible, .chip:focus-visible { outline: 3px solid rgba(8,8,8,.35); outline-offset: 2px; }
-
-  /* ===== Thank you ===== */
-  .done-wrap { text-align: center; padding-top: 40px; }
-  .check { width: 76px; height: 76px; border-radius: 50%; background: var(--black); margin: 0 auto 22px; display: grid; place-items: center; position: relative; }
-  .check svg { width: 34px; height: 34px; }
-  .check::after { content: ""; position: absolute; right: 2px; bottom: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--red); border: 3px solid #fff; }
-  .next { text-align: left; margin-top: 26px; display: grid; gap: 10px; }
-  .next div { padding: 12px 14px; background: var(--grey-bg); border-radius: var(--radius); font-size: .92rem; }
-  .demo-note { margin-top: 18px; font-size: .75rem; color: var(--muted); }
+:root{--black:#080808;--red:#E50914;--red-d:#C20710;--bg:#F5F5F5;--text:#292929;--muted:#6B6B6B;--line:#E5E5E5;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--text);background:var(--bg);line-height:1.5;display:flex;justify-content:center;min-height:100vh}
+.app{width:100%;max-width:480px;min-height:100vh;background:#fff;display:flex;flex-direction:column;padding:0 20px}
+@media(min-width:520px){body{padding:24px 0}.app{min-height:0;border-radius:24px;border:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.06)}}
+.logo{padding-top:18px;font-weight:800;font-size:1.4rem;color:var(--black);letter-spacing:-.03em}
+.logo i{color:var(--red);font-style:normal}
+.progress{margin-top:16px;display:none}.progress.on{display:block}
+.pm{display:flex;justify-content:space-between;font-size:.75rem;font-weight:600;margin-bottom:8px}.pm span+span{color:var(--muted);font-weight:500}
+.segs{display:flex;gap:6px}.seg{flex:1;height:4px;border-radius:4px;background:var(--line)}.seg.done{background:var(--red)}
+main{flex:1;padding:22px 0 8px}
+.step{display:none;animation:rise .25s ease both}.step.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h1{font-size:1.7rem;line-height:1.2;font-weight:800;color:var(--black);letter-spacing:-.02em}
+h2{font-size:1.35rem;line-height:1.25;font-weight:800;color:var(--black)}
+.sub{color:var(--muted);font-size:.95rem;margin-top:6px}
+.dot{display:inline-block;width:.42em;height:.42em;border-radius:50%;background:var(--red);margin-left:.12em}
+.eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:26px 0 10px}
+.facts{list-style:none;margin:22px 0 6px;display:grid;gap:10px}
+.facts li,.note div,.privacy{padding:12px 14px;background:var(--bg);border-radius:var(--r);font-size:.92rem}
+.facts li{display:flex;gap:12px}.facts li::before{content:"";flex:none;width:8px;height:8px;margin-top:.5em;border-radius:50%;background:var(--red)}
+.q{margin-top:24px}.label{display:block;font-size:.95rem;font-weight:700;color:var(--black);margin-bottom:4px}
+.hint{font-size:.8rem;color:var(--muted);margin-bottom:10px}.opt{font-weight:500;color:var(--muted);font-size:.8rem}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{font:inherit;font-size:.92rem;font-weight:600;color:var(--text);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:11px 16px;min-height:46px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--black);border-color:var(--black);color:#fff}
+.chip[aria-pressed=true]::after{content:"";display:inline-block;width:7px;height:7px;margin-left:9px;border-radius:50%;background:var(--red)}
+.chip.wide{flex:1 1 100%;text-align:left}.chips.invalid .chip{border-color:var(--red)}
+input{width:100%;font:inherit;font-size:1rem;color:var(--black);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;min-height:50px;outline:none}
+input:focus{border-color:var(--black);box-shadow:0 0 0 3px rgba(8,8,8,.08)}
+input.invalid{border-color:var(--red);box-shadow:0 0 0 3px rgba(229,9,20,.12)}
+.ob{margin-top:10px;display:none}.ob.show{display:block}
+.trow{display:flex;gap:12px}.trow label{flex:1;font-size:.8rem;font-weight:600;color:var(--muted)}.trow input{margin-top:6px}
+.err{color:var(--red);font-size:.8rem;font-weight:600;margin-top:6px;min-height:1.1em}
+.pw{position:relative}.pw input{padding-right:84px}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);font:inherit;font-size:.8rem;font-weight:700;color:var(--muted);background:none;border:0;padding:8px 10px;cursor:pointer}
+.privacy{margin-top:22px;font-size:.78rem;color:var(--muted)}
+.actions{padding:14px 0 calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:6px;position:sticky;bottom:0;background:linear-gradient(to bottom,rgba(255,255,255,0),#fff 28%)}
+.btn{font:inherit;font-weight:700;font-size:1rem;width:100%;min-height:54px;border:0;border-radius:999px;cursor:pointer;display:block;text-align:center;text-decoration:none;line-height:54px;padding:0}
+.btn.primary{background:var(--red);color:#fff}.btn.primary:hover{background:var(--red-d)}.btn.primary[disabled]{opacity:.6}
+.btn.ghost{background:none;color:var(--muted);font-weight:600;font-size:.9rem;min-height:40px;line-height:40px}
+.btn.dark{background:var(--black);color:#fff}
+button:focus-visible{outline:3px solid rgba(8,8,8,.35);outline-offset:2px}
+.done{text-align:center;padding-top:40px}
+.check{width:76px;height:76px;border-radius:50%;background:var(--black);margin:0 auto 22px;display:grid;place-items:center;color:#fff;font-size:2rem}
+.note{text-align:left;margin-top:26px;display:grid;gap:10px}
+.static{position:static;background:none;padding-top:22px}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
 <div class="app">
-
-  <header class="top">
-    <div class="brand">
-      <img src="data:image/png;base64,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" alt="CeK">
-      <div class="lang" data-dyn role="group" aria-label="Language">
-        <button type="button" id="langEn" aria-pressed="true">English</button>
-        <button type="button" id="langHi" aria-pressed="false">हिंदी</button>
-      </div>
-    </div>
-    <div class="progress" id="progress" aria-live="polite">
-      <div class="progress-meta"><span id="stepLabel" data-dyn>Step 1 of 3</span><span class="pct" id="pctLabel" data-dyn>33% complete</span></div>
-      <div class="segs" id="segs"></div>
-    </div>
-  </header>
-
-  <main>
-    <!-- ===== Intro ===== -->
-    <section class="step active" data-step="0">
-      <div class="hero">
-        <p class="eyebrow">Board Crash Course 2027</p>
-        <h1>Will this batch suit you?<span class="dot"></span></h1>
-        <p class="sub">Tap a few options. It takes about 2 minutes, and you don't need to type much.</p>
-        <p class="sub">All questions are required so we can reply properly.</p>
-        <ul class="facts">
-          <li><span><b>Free demo class</b> before you decide.</span></li>
-          <li><span><b>Small batch of 20.</b> A mentor who knows your name.</span></li>
-          <li><span><b>Weak topics first.</b> Your answers tell us where to start.</span></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ===== Step 1: casual basics ===== -->
-    <section class="step" data-step="1">
-      <h2>About the student</h2>
-      <p class="sub">So we can match you to the right group.</p>
-
-      <div class="q">
-        <label for="name">Student name</label>
-        <input type="text" id="name" maxlength="60" placeholder="First name is enough" autocomplete="given-name">
-        <div class="err" id="err-name" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <span class="label">Class</span>
-        <div class="chips" data-name="class" data-mode="single">
-          <button type="button" class="chip" data-v="9">9</button>
-          <button type="button" class="chip" data-v="10">10</button>
-          <button type="button" class="chip" data-v="11">11</button>
-          <button type="button" class="chip" data-v="12">12</button>
-        </div>
-        <div class="err" id="err-class" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <span class="label">Board</span>
-        <div class="chips" data-name="board" data-mode="single">
-          <button type="button" class="chip" data-v="CBSE">CBSE</button>
-          <button type="button" class="chip" data-v="ICSE">ICSE</button>
-          <button type="button" class="chip" data-v="Other" data-other="boardOther">Other</button>
-        </div>
-        <div class="other-box" id="boardOtherBox">
-          <input type="text" id="boardOther" maxlength="60" placeholder="Type your board, e.g. Punjab Board (PSEB)" autocomplete="off">
-        </div>
-        <div class="err" id="err-board" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <span class="label">Medium <span class="opt">(pick all that apply)</span></span>
-        <div class="chips" data-name="medium" data-mode="multi">
-          <button type="button" class="chip" data-v="English">English</button>
-          <button type="button" class="chip" data-v="Hindi">Hindi</button>
-          <button type="button" class="chip" data-v="Other" data-other="mediumOther">Other</button>
-        </div>
-        <div class="other-box" id="mediumOtherBox">
-          <input type="text" id="mediumOther" maxlength="60" placeholder="Type your medium, e.g. Punjabi" autocomplete="off">
-        </div>
-        <div class="err" id="err-medium" data-dyn role="alert"></div>
-      </div>
-    </section>
-
-    <!-- ===== Step 2: the important questions (saved to the Sheet when this step is done) ===== -->
-    <section class="step" data-step="2">
-      <h2>The important bit</h2>
-      <p class="sub">These help us decide how to support you.</p>
-
-      <div class="q">
-        <span class="label">Subjects you want help with</span>
-        <div class="chips" data-name="subjects" data-mode="multi">
-          <button type="button" class="chip" data-v="Physics">Physics</button>
-          <button type="button" class="chip" data-v="Maths">Maths</button>
-          <button type="button" class="chip" data-v="Science">Science</button>
-          <button type="button" class="chip" data-v="Computer Science">Computer Science</button>
-        </div>
-        <div class="err" id="err-subjects" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <span class="label">Does this fee work for you?</span>
-        <p class="hint">The online batch is ₹2499 for 3 months. Early-bird offer ends 22 Nov.</p>
-        <div class="chips" data-name="budget" data-mode="single">
-          <button type="button" class="chip wide" data-v="Yes">Yes, it works</button>
-          <button type="button" class="chip wide" data-v="Need to discuss with parents">I need to discuss with my parents</button>
-          <button type="button" class="chip wide" data-v="Looking for a lower fee">I'm looking for a lower fee</button>
-        </div>
-        <div class="err" id="err-budget" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <span class="label">Want a free demo class?</span>
-        <div class="chips" data-name="demo" data-mode="single">
-          <button type="button" class="chip" data-v="Yes, send details">Yes, send details</button>
-          <button type="button" class="chip" data-v="Not yet">Not yet</button>
-        </div>
-        <div class="err" id="err-demo" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <label for="phone">WhatsApp number</label>
-        <p class="hint">Student's or parent's number is fine.</p>
-        <input type="tel" id="phone" inputmode="numeric" maxlength="16" placeholder="10-digit mobile number" autocomplete="tel">
-        <div class="err" id="err-phone" data-dyn role="alert"></div>
-        <input type="text" id="hp_field" name="hp_field" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-      </div>
-
-      <div class="privacy">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        <span>Your details are used only by CeK Classes to reply about this batch. They are not shared with anyone.</span>
-      </div>
-    </section>
-
-    <!-- ===== Step 3: planning questions ===== -->
-    <section class="step" data-step="3">
-      <h2>Last few questions</h2>
-      <p class="sub">Be honest. This helps us plan your first week.</p>
-
-      <div class="q">
-        <span class="label">Other subjects that are creating problems</span>
-        <p class="hint">Even if we don't teach them yet, this tells us what you struggle with.</p>
-        <div class="chips" data-name="otherSubjects" data-mode="multi">
-          <button type="button" class="chip" data-v="Chemistry">Chemistry</button>
-          <button type="button" class="chip" data-v="Biology">Biology</button>
-          <button type="button" class="chip" data-v="English">English</button>
-          <button type="button" class="chip" data-v="Hindi">Hindi</button>
-          <button type="button" class="chip" data-v="Social Science">Social Science</button>
-          <button type="button" class="chip" data-v="Accountancy">Accountancy</button>
-          <button type="button" class="chip" data-v="Other" data-other="otherSubjectsOther">Other</button>
-          <button type="button" class="chip" data-v="None" data-exclusive>No other subject</button>
-        </div>
-        <div class="other-box" id="otherSubjectsOtherBox">
-          <input type="text" id="otherSubjectsOther" maxlength="80" placeholder="Type the subject, e.g. Economics" autocomplete="off">
-        </div>
-        <div class="err" id="err-otherSubjects" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <span class="label">Biggest worries <span class="opt">(pick any)</span></span>
-        <div class="chips" data-name="worry" data-mode="multi">
-          <button type="button" class="chip wide" data-v="Syllabus not finished">Syllabus not finished</button>
-          <button type="button" class="chip wide" data-v="Weak topics">Weak topics</button>
-          <button type="button" class="chip wide" data-v="Low test scores">Low test scores</button>
-          <button type="button" class="chip wide" data-v="Can't stay consistent">Can't stay consistent</button>
-          <button type="button" class="chip wide" data-v="Doubts not getting solved">Doubts not getting solved</button>
-        </div>
-        <div class="err" id="err-worry" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <span class="label">Which timing suits you?</span>
-        <div class="chips" data-name="timing" data-mode="single">
-          <button type="button" class="chip" data-v="Morning">Morning</button>
-          <button type="button" class="chip" data-v="Afternoon">Afternoon</button>
-          <button type="button" class="chip" data-v="Evening">Evening</button>
-          <button type="button" class="chip" data-v="Weekends only">Weekends only</button>
-          <button type="button" class="chip" data-v="Specific time" data-other="timeSpecific" data-focus="timeFrom">Specific time</button>
-        </div>
-        <div class="other-box" id="timeSpecificBox">
-          <p class="hint">Pick the time that suits you every day.</p>
-          <div class="timerow">
-            <label>From <input type="time" id="timeFrom"></label>
-            <label>To <input type="time" id="timeTo"></label>
-          </div>
-        </div>
-        <div class="err" id="err-timing" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <label for="school">School</label>
-        <input type="text" id="school" maxlength="80" placeholder="e.g. Government Senior Secondary School, Phase 5" autocomplete="off">
-        <div class="err" id="err-school" data-dyn role="alert"></div>
-      </div>
-    </section>
-
-    <!-- ===== Create account ===== -->
-    <section class="step" data-step="6">
-      <h2>Create your account</h2>
-      <p class="sub">Use your email to log in later and see your batch details.</p>
-
-      <div class="q">
-        <label for="email">Email</label>
-        <input type="email" id="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="100" placeholder="name@example.com">
-        <div class="err" id="emailErr" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <label for="pw">Create password</label>
-        <p class="hint">At least 8 characters, with a letter and a number.</p>
-        <div class="pwwrap"><input type="password" id="pw" autocomplete="new-password" maxlength="64"><button type="button" class="eye" data-for="pw" data-dyn>Show</button></div>
-        <div class="err" id="pwErr" data-dyn role="alert"></div>
-      </div>
-
-      <div class="q">
-        <label for="pw2">Confirm password</label>
-        <div class="pwwrap"><input type="password" id="pw2" autocomplete="new-password" maxlength="64"><button type="button" class="eye" data-for="pw2" data-dyn>Show</button></div>
-        <div class="err" id="pw2Err" data-dyn role="alert"></div>
-      </div>
-
-      <div class="privacy">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        <span>Your password is stored in scrambled form, never as plain text. Don't reuse a password from another account.</span>
-      </div>
-    </section>
-
-    <!-- ===== Thank you ===== -->
-    <section class="step" data-step="7">
-      <div class="done-wrap">
-        <div class="check">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-        </div>
-        <h2>Thank you<span class="dot"></span></h2>
-        <p class="sub" id="thanksSub" data-dyn>We've received your answers.</p>
-        <div class="next">
-          <div><b>Next:</b> expect a WhatsApp message from us shortly.</div>
-          <div><b>Batch:</b> starts Mon 23 Nov. Demo class details will come on WhatsApp.</div>
-          <div id="acctNote" hidden>Your account is ready. Log in anytime with your email.</div>
-        </div>
-        <div class="actions" style="position:static;background:none;padding-top:22px;">
-          <a id="waBtn" class="btn dark" style="display:none;text-align:center;text-decoration:none;line-height:54px;" target="_blank" rel="noopener">Message us on WhatsApp</a>
-        </div>
-        <p class="demo-note" id="demoNote" hidden>Preview mode: nothing was saved. Set the web app URL in the page to save answers to your Sheet.</p>
-      </div>
-    </section>
-
-    <!-- ===== Log in ===== -->
-    <section class="step" data-step="8">
-      <h2>Log in</h2>
-      <p class="sub">Enter the email and password you created.</p>
-
-      <div class="q">
-        <label for="loginEmail">Email</label>
-        <input type="email" id="loginEmail" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="100" placeholder="name@example.com">
-      </div>
-      <div class="q">
-        <label for="loginPw">Password</label>
-        <div class="pwwrap"><input type="password" id="loginPw" autocomplete="current-password" maxlength="64"><button type="button" class="eye" data-for="loginPw" data-dyn>Show</button></div>
-        <div class="err" id="loginErr" data-dyn role="alert"></div>
-      </div>
-      <p class="hint">Forgot your password? Message us on WhatsApp and we'll reset it.</p>
-    </section>
-
-    <!-- ===== Welcome back ===== -->
-    <section class="step" data-step="9">
-      <div class="done-wrap">
-        <div class="check">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-        </div>
-        <h2>Welcome back<span class="dot"></span></h2>
-        <p class="sub" id="welcomeSub" data-dyn></p>
-        <div class="next">
-          <div>Your registration is confirmed. We'll message you on WhatsApp with demo class details.</div>
-          <div id="statusLine" data-dyn hidden></div>
-        </div>
-        <div class="actions" style="position:static;background:none;padding-top:22px;"><button type="button" class="btn ghost" id="logoutBtn">Log out</button></div>
-      </div>
-    </section>
-  </main>
-
-  <div class="actions" id="actions">
-    <button type="button" class="btn primary" id="nextBtn" data-dyn>Start</button>
-    <button type="button" class="btn ghost" id="backBtn" data-dyn hidden>Back</button>
-    <button type="button" class="btn ghost" id="loginBtn">Already registered? Log in</button>
-  </div>
+<header>
+  <!-- Replace this text with your logo: <img src="logo.png" alt="CeK" style="height:34px"> -->
+  <div class="logo">CeK<i>.</i> Classes</div>
+  <div class="progress" id="progress"><div class="pm"><span id="stepLbl"></span><span id="pctLbl"></span></div><div class="segs" id="segs"></div></div>
+</header>
+<main id="main">
+  <section class="step active" data-step="0">
+    <p class="eyebrow">Board Crash Course 2027</p>
+    <h1>Will this batch suit you?<span class="dot"></span></h1>
+    <p class="sub">Tap a few options. It takes about 2 minutes.</p>
+    <p class="sub">All questions are required so we can reply properly.</p>
+    <ul class="facts">
+      <li><span><b>Free demo class</b> before you decide.</span></li>
+      <li><span><b>Small batch of 20.</b> A mentor who knows your name.</span></li>
+      <li><span><b>Weak topics first.</b> Your answers tell us where to start.</span></li>
+    </ul>
+  </section>
+  <section class="step" data-step="1"><h2>About the student</h2><p class="sub">So we can match you to the right group.</p><div id="f1"></div></section>
+  <section class="step" data-step="2"><h2>The important bit</h2><p class="sub">These help us decide how to support you.</p><div id="f2"></div>
+    <div class="privacy">Your details are used only by CeK Classes to reply about this batch. They are not shared with anyone.</div></section>
+  <section class="step" data-step="3"><h2>Last few questions</h2><p class="sub">Be honest. This helps us plan your first week.</p><div id="f3"></div></section>
+  <section class="step" data-step="4"><h2>Create your account</h2><p class="sub">Use your email to log in later and see your batch details.</p>
+    <div class="q"><label class="label" for="email">Email</label><input type="email" id="email" autocomplete="email" autocapitalize="none" maxlength="100" placeholder="name@example.com"><div class="err" id="emailErr"></div></div>
+    <div class="q"><label class="label" for="pw">Create password</label><p class="hint">At least 8 characters, with a letter and a number.</p><div class="pw"><input type="password" id="pw" autocomplete="new-password" maxlength="64"><button type="button" class="eye" data-for="pw">Show</button></div><div class="err" id="pwErr"></div></div>
+    <div class="q"><label class="label" for="pw2">Confirm password</label><div class="pw"><input type="password" id="pw2" autocomplete="new-password" maxlength="64"><button type="button" class="eye" data-for="pw2">Show</button></div><div class="err" id="pw2Err"></div></div>
+    <div class="privacy">Your password is stored in scrambled form, never as plain text. Don't reuse a password from another account.</div></section>
+  <section class="step" data-step="5"><div class="done"><div class="check">✓</div>
+    <h2>Thank you<span class="dot"></span></h2><p class="sub" id="thanksSub"></p>
+    <div class="note"><div><b>Next:</b> expect a WhatsApp message from us shortly.</div><div id="batchLine"></div><div id="acctNote" hidden>Your account is ready. Log in anytime with your email.</div></div>
+    <div class="actions static"><a id="waBtn" class="btn dark" target="_blank" rel="noopener" hidden>Message us on WhatsApp</a><button type="button" class="btn ghost" id="newBtn">Fill form for another student</button></div>
+    <p class="sub" id="demoNote" hidden style="font-size:.75rem">Preview mode: nothing was saved. Set CEK_API to save to your Sheet.</p></div></section>
+  <section class="step" data-step="6"><h2>Log in</h2><p class="sub">Enter the email and password you created.</p>
+    <div class="q"><label class="label" for="lEmail">Email</label><input type="email" id="lEmail" autocomplete="email" autocapitalize="none" maxlength="100" placeholder="name@example.com"></div>
+    <div class="q"><label class="label" for="lPw">Password</label><div class="pw"><input type="password" id="lPw" autocomplete="current-password" maxlength="64"><button type="button" class="eye" data-for="lPw">Show</button></div><div class="err" id="loginErr"></div></div>
+    <p class="hint">Forgot your password? Message us on WhatsApp and we'll reset it.</p></section>
+  <section class="step" data-step="7"><div class="done"><div class="check">✓</div>
+    <h2>Welcome back<span class="dot"></span></h2><p class="sub" id="welcomeSub"></p>
+    <div class="note"><div>Your registration is confirmed. We'll message you on WhatsApp with demo class details.</div><div id="statusLine" hidden></div></div>
+    <div class="actions static"><button type="button" class="btn ghost" id="logoutBtn">Log out</button></div></div></section>
+</main>
+<div class="actions" id="actions">
+  <button type="button" class="btn primary" id="nextBtn">Start</button>
+  <button type="button" class="btn ghost" id="backBtn" hidden>Back</button>
+  <button type="button" class="btn ghost" id="loginBtn">Already registered? Log in</button>
+</div>
 </div>
 
 <script>
-  // The Apps Script web app that saves answers to your Google Sheet (the "Web app URL" ending in /exec).
-  window.CEK_API = 'https://script.google.com/macros/s/AKfycbzG2b-E4r3MvAp4n7Uf-nfpCtSguFP5FIjes5JBgA_tq90CSVRKfQHwQ-jWYJKbKT0A/exec';
-  // Share links:  ?lang=hi  opens in Hindi,  ?src=group1  tracks where a lead came from
-  (function () {
-    var q = {};
-    try { q = new URLSearchParams(location.search); } catch (e) { q = { get: function () { return ''; } }; }
-    window.CEK_LANG = q.get('lang') || '';
-    window.CEK_SRC = q.get('src') || '';
-  })();
-</script>
-<script>
+// ===== CONFIG: edit these =====
+var CEK_API = 'https://script.google.com/macros/s/AKfycbzG2b-E4r3MvAp4n7UfnfpCtSguFP5FIjes5JBgA_tq90CSVRKfQHwQ-jWYJKbKT0A/exec';
+var TEACHER_WHATSAPP = '';      // e.g. '919876543210' (no +). Empty hides the button.
+var FEE_TEXT = 'The online batch is ₹2499 for 3 months.';   // change the offer text here
+var BATCH_TEXT = '<b>Batch:</b> starts soon. Demo class details will come on WhatsApp.';
+
 (function () {
-  'use strict';
+'use strict';
+var $ = function (s, r) { return (r || document).querySelector(s); };
+var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+var qs = new URLSearchParams(location.search);
+var SRC = /^[\w-]{1,30}$/.test(qs.get('src') || '') ? qs.get('src') : 'whatsapp';
+var TOTAL = 3, current = 0, submitting = false, thanksName = '';
+function newId() { return 'L' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+var leadId = newId();
 
-  // ===== Config =====
-  var TOTAL_STEPS = 3;                 // question steps (1..3)
-  var TEACHER_WHATSAPP = '';           // e.g. '919876543210' (country code + number, no +). Leave empty to hide the button.
+// ===== Question definitions (the form is built from this) =====
+var Q = {
+ 1: [ {k:'name',t:'text',label:'Student name',ph:'First name is enough',max:60,msg:'Please enter the student name.'},
+      {k:'class',t:'single',label:'Class',o:['9','10','11','12']},
+      {k:'board',t:'single',label:'Board',o:['CBSE','ICSE','Other'],oph:'Type your board, e.g. Punjab Board (PSEB)'},
+      {k:'medium',t:'multi',label:'Medium',opt:'(pick all that apply)',o:['English','Hindi','Other'],oph:'Type your medium, e.g. Punjabi'} ],
+ 2: [ {k:'subjects',t:'multi',label:'Subjects you want help with',o:['Physics','Maths','Science','Computer Science']},
+      {k:'budget',t:'single',wide:1,label:'Does this fee work for you?',hint:FEE_TEXT,o:['Yes, it works','I need to discuss with my parents',"I'm looking for a lower fee"]},
+      {k:'demo',t:'single',label:'Want a free demo class?',o:['Yes, send details','Not yet']},
+      {k:'phone',t:'phone',label:'WhatsApp number',hint:"Student's or parent's number is fine.",ph:'10-digit mobile number'} ],
+ 3: [ {k:'otherSubjects',t:'multi',label:'Other subjects that are creating problems',hint:"Even if we don't teach them yet, this tells us what you struggle with.",o:['Chemistry','Biology','English','Hindi','Social Science','Accountancy','Other','No other subject'],ex:'No other subject',oph:'Type the subject, e.g. Economics'},
+      {k:'worry',t:'multi',wide:1,label:'Biggest worries',opt:'(pick any)',o:['Syllabus not finished','Weak topics','Low test scores',"Can't stay consistent",'Doubts not getting solved']},
+      {k:'timing',t:'single',label:'Which timing suits you?',o:['Morning','Afternoon','Evening','Weekends only','Specific time']},
+      {k:'school',t:'text',label:'School',ph:'e.g. Government Senior Secondary School, Phase 5',max:80,msg:'Please enter the school name.'} ]
+};
+var S = {};   // chip answers: S[key] = [values]
 
-  var state = { class: [], board: [], medium: [], subjects: [], otherSubjects: [], worry: [], timing: [], budget: [], demo: [] };
-  var current = 0;
-  var submitting = false;
-  var leadId = 'L' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-
-  var $ = function (s, r) { return (r || document).querySelector(s); };
-  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-
-  // progress segments
-  var segsEl = $('#segs');
-  for (var i = 0; i < TOTAL_STEPS; i++) { var d = document.createElement('div'); d.className = 'seg'; segsEl.appendChild(d); }
-
-  // ===== Errors =====
-  var errKeys = {};
-  function setErr(key, id) { errKeys[id] = key || ''; $('#' + id).textContent = key ? tr(key) : ''; }
-
-  // ===== Chips =====
-  $$('.chips').forEach(function (group) {
-    var name = group.dataset.name, mode = group.dataset.mode;
-    group.addEventListener('click', function (e) {
-      var chip = e.target.closest('.chip');
-      if (!chip || !group.contains(chip)) return;
-      var v = chip.dataset.v;
-      var on = chip.getAttribute('aria-pressed') === 'true';
-      if (mode === 'single') {
-        $$('.chip', group).forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
-        state[name] = on ? [] : [v];
-        if (!on) chip.setAttribute('aria-pressed', 'true');
-      } else {
-        if (!on) {
-          if (chip.hasAttribute('data-exclusive')) {
-            $$('.chip', group).forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
-          } else {
-            var ex = $('.chip[data-exclusive]', group);
-            if (ex) ex.setAttribute('aria-pressed', 'false');
-          }
-        }
-        chip.setAttribute('aria-pressed', on ? 'false' : 'true');
-        state[name] = $$('.chip[aria-pressed="true"]', group).map(function (c) { return c.dataset.v; });
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function build() {
+  [1, 2, 3].forEach(function (n) {
+    $('#f' + n).innerHTML = Q[n].map(function (f) {
+      var h = '<div class="q"><' + (f.t === 'text' || f.t === 'phone' ? 'label for="' + f.k + '"' : 'span') + ' class="label">' + f.label + (f.opt ? ' <span class="opt">' + f.opt + '</span>' : '') + '</' + (f.t === 'text' || f.t === 'phone' ? 'label' : 'span') + '>';
+      if (f.hint) h += '<p class="hint">' + esc(f.hint) + '</p>';
+      if (f.t === 'text') h += '<input type="text" id="' + f.k + '" maxlength="' + f.max + '" placeholder="' + esc(f.ph) + '" autocomplete="off">';
+      else if (f.t === 'phone') h += '<input type="tel" id="phone" inputmode="numeric" maxlength="16" placeholder="' + f.ph + '" autocomplete="tel"><input type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">';
+      else {
+        h += '<div class="chips" data-k="' + f.k + '" data-mode="' + f.t + '">' + f.o.map(function (o) {
+          return '<button type="button" class="chip' + (f.wide ? ' wide' : '') + '" data-v="' + esc(o) + '">' + esc(o) + '</button>'; }).join('') + '</div>';
+        if (f.oph) h += '<div class="ob" id="ob_' + f.k + '"><input type="text" id="o_' + f.k + '" maxlength="80" placeholder="' + esc(f.oph) + '" autocomplete="off"></div>';
+        if (f.k === 'timing') h += '<div class="ob" id="ob_timing"><p class="hint">Pick the time that suits you every day.</p><div class="trow"><label>From <input type="time" id="tFrom"></label><label>To <input type="time" id="tTo"></label></div></div>';
       }
-      // show / hide the extra box ("Other" text, specific time)
-      $$('.chip[data-other]', group).forEach(function (oc) {
-        var box = $('#' + oc.dataset.other + 'Box');
-        var show = oc.getAttribute('aria-pressed') === 'true';
-        box.classList.toggle('show', show);
-        if (show && oc === chip) { var f = $('#' + (oc.dataset.focus || oc.dataset.other)); if (f) f.focus({ preventScroll: true }); }
-      });
-      group.classList.remove('invalid');
-      setErr('', 'err-' + name);
-    });
+      return h + '<div class="err" id="e_' + f.k + '" role="alert"></div></div>';
+    }).join('');
   });
+  var sg = $('#segs'); sg.innerHTML = ''; for (var i = 0; i < TOTAL; i++) sg.appendChild(document.createElement('div')).className = 'seg';
+  $$('.chips').forEach(function (g) { S[g.dataset.k] = []; });
+  $('#batchLine').innerHTML = BATCH_TEXT;
+}
+build();
 
-  // clear a field's error as soon as the student edits it
-  [['name', 'name'], ['school', 'school'], ['phone', 'phone'], ['boardOther', 'board'], ['mediumOther', 'medium'],
-   ['otherSubjectsOther', 'otherSubjects'], ['timeFrom', 'timing'], ['timeTo', 'timing']].forEach(function (pair) {
-    $('#' + pair[0]).addEventListener('input', function () { this.classList.remove('invalid'); setErr('', 'err-' + pair[1]); });
-  });
+function setErr(k, msg) { var e = $('#e_' + k); if (e) e.textContent = msg || ''; }
+function defOf(k) { for (var n in Q) for (var i = 0; i < Q[n].length; i++) if (Q[n][i].k === k) return Q[n][i]; }
 
-  // ===== Language (English / हिंदी) =====
-  var HI = {
-    "Board Crash Course 2027": "बोर्ड क्रैश कोर्स 2027",
-    "Will this batch suit you?": "क्या यह बैच आपके लिए सही है?",
-    "Tap a few options. It takes about 2 minutes, and you don't need to type much.": "कुछ विकल्पों पर टैप करें। इसमें लगभग 2 मिनट लगते हैं, ज़्यादा टाइप नहीं करना पड़ेगा।",
-    "All questions are required so we can reply properly.": "सभी सवाल ज़रूरी हैं ताकि हम सही जवाब दे सकें।",
-    "Free demo class": "फ्री डेमो क्लास।",
-    "before you decide.": "पसंद आए तभी जॉइन करें।",
-    "Small batch of 20.": "सिर्फ़ 20 बच्चों का बैच।",
-    "A mentor who knows your name.": "ऐसा मेंटर जो आपका नाम जानता है।",
-    "Weak topics first.": "कमज़ोर टॉपिक पहले।",
-    "Your answers tell us where to start.": "आपके जवाब बताते हैं कि कहाँ से शुरू करें।",
-    "About the student": "विद्यार्थी के बारे में",
-    "So we can match you to the right group.": "ताकि हम आपको सही ग्रुप में रख सकें।",
-    "Student name": "विद्यार्थी का नाम",
-    "Class": "कक्षा",
-    "Board": "बोर्ड",
-    "Other": "अन्य",
-    "Medium": "माध्यम",
-    "(pick all that apply)": "(जो लागू हों, सब चुनें)",
-    "English": "अंग्रेज़ी",
-    "Hindi": "हिंदी",
-    "The important bit": "ज़रूरी सवाल",
-    "These help us decide how to support you.": "इनसे हम तय करते हैं कि आपकी कैसे मदद करें।",
-    "Subjects you want help with": "जिन विषयों में मदद चाहिए",
-    "Physics": "फिज़िक्स",
-    "Maths": "गणित",
-    "Science": "विज्ञान",
-    "Computer Science": "कंप्यूटर साइंस",
-    "Does this fee work for you?": "क्या यह फीस आपके लिए ठीक है?",
-    "The online batch is ₹2499 for 3 months. Early-bird offer ends 22 Nov.": "ऑनलाइन बैच 3 महीने के लिए ₹2499 का है। अर्ली-बर्ड ऑफ़र 22 नवंबर तक है।",
-    "Yes, it works": "हाँ, ठीक है",
-    "I need to discuss with my parents": "मुझे माता-पिता से बात करनी होगी",
-    "I'm looking for a lower fee": "मुझे कम फीस चाहिए",
-    "Want a free demo class?": "फ्री डेमो क्लास चाहिए?",
-    "Yes, send details": "हाँ, जानकारी भेजें",
-    "Not yet": "अभी नहीं",
-    "WhatsApp number": "WhatsApp नंबर",
-    "Student's or parent's number is fine.": "विद्यार्थी या माता-पिता का नंबर चलेगा।",
-    "Your details are used only by CeK Classes to reply about this batch. They are not shared with anyone.": "आपकी जानकारी सिर्फ़ CeK Classes इस बैच के बारे में जवाब देने के लिए इस्तेमाल करेगा। इसे किसी और के साथ साझा नहीं किया जाएगा।",
-    "Last few questions": "आख़िरी कुछ सवाल",
-    "Be honest. This helps us plan your first week.": "सच बताइए। इससे हम आपका पहला हफ़्ता प्लान कर पाएँगे।",
-    "Other subjects that are creating problems": "अन्य विषय जिनमें दिक्कत आ रही है",
-    "Even if we don't teach them yet, this tells us what you struggle with.": "भले ही हम अभी उन्हें न पढ़ाते हों, इससे हमें पता चलता है कि आपको कहाँ दिक्कत है।",
-    "Chemistry": "रसायन विज्ञान",
-    "Biology": "जीव विज्ञान",
-    "Social Science": "सामाजिक विज्ञान",
-    "Accountancy": "अकाउंटेंसी",
-    "No other subject": "कोई और विषय नहीं",
-    "Biggest worries": "सबसे बड़ी चिंताएँ",
-    "(pick any)": "(कोई भी चुनें)",
-    "Syllabus not finished": "सिलेबस पूरा नहीं हुआ",
-    "Weak topics": "कमज़ोर टॉपिक",
-    "Low test scores": "टेस्ट में कम नंबर",
-    "Can't stay consistent": "नियमित पढ़ाई नहीं हो पाती",
-    "Doubts not getting solved": "डाउट्स क्लियर नहीं होते",
-    "Which timing suits you?": "कौन सा समय आपके लिए ठीक है?",
-    "Morning": "सुबह",
-    "Afternoon": "दोपहर",
-    "Evening": "शाम",
-    "Weekends only": "सिर्फ़ वीकेंड",
-    "Specific time": "खास समय",
-    "Pick the time that suits you every day.": "रोज़ का वह समय चुनें जो आपके लिए ठीक है।",
-    "From": "से",
-    "To": "तक",
-    "School": "स्कूल",
-    "Create your account": "अपना अकाउंट बनाएँ",
-    "Use your email to log in later and see your batch details.": "बाद में लॉग इन करके अपने बैच की जानकारी देखने के लिए ईमेल इस्तेमाल करें।",
-    "Email": "ईमेल",
-    "Create password": "पासवर्ड बनाएँ",
-    "At least 8 characters, with a letter and a number.": "कम से कम 8 अक्षर, जिनमें एक अक्षर और एक संख्या हो।",
-    "Confirm password": "पासवर्ड दोबारा डालें",
-    "Your password is stored in scrambled form, never as plain text. Don't reuse a password from another account.": "आपका पासवर्ड सुरक्षित (hashed) रूप में रखा जाता है, सादे टेक्स्ट में नहीं। किसी दूसरे अकाउंट वाला पासवर्ड दोबारा इस्तेमाल न करें।",
-    "Thank you": "धन्यवाद",
-    "Next:": "आगे:",
-    "expect a WhatsApp message from us shortly.": "जल्द ही आपको हमारा WhatsApp संदेश मिलेगा।",
-    "Batch:": "बैच:",
-    "starts Mon 23 Nov. Demo class details will come on WhatsApp.": "सोमवार 23 नवंबर से शुरू। डेमो क्लास की जानकारी WhatsApp पर मिलेगी।",
-    "Your account is ready. Log in anytime with your email.": "आपका अकाउंट तैयार है। जब चाहें अपने ईमेल से लॉग इन करें।",
-    "Message us on WhatsApp": "WhatsApp पर संदेश भेजें",
-    "Log in": "लॉग इन",
-    "Enter the email and password you created.": "आपने जो ईमेल और पासवर्ड बनाया था, वही डालें।",
-    "Password": "पासवर्ड",
-    "Forgot your password? Message us on WhatsApp and we'll reset it.": "पासवर्ड भूल गए? WhatsApp पर संदेश भेजें, हम रीसेट कर देंगे।",
-    "Welcome back": "वापसी पर स्वागत है",
-    "Your registration is confirmed. We'll message you on WhatsApp with demo class details.": "आपका रजिस्ट्रेशन पक्का है। डेमो क्लास की जानकारी हम WhatsApp पर भेजेंगे।",
-    "Log out": "लॉग आउट",
-    "Already registered? Log in": "पहले से रजिस्टर्ड हैं? लॉग इन करें",
-    "Please enter the student name.": "कृपया विद्यार्थी का नाम लिखें।",
-    "Please enter the school name.": "कृपया स्कूल का नाम लिखें।",
-    "Please pick an option.": "कृपया एक विकल्प चुनें।",
-    "Please pick at least one option.": "कृपया कम से कम एक विकल्प चुनें।",
-    "Please type it in the box.": "कृपया बॉक्स में लिखें।",
-    "Pick both start and end time.": "शुरू और खत्म होने का समय दोनों चुनें।",
-    "End time must be after start time.": "खत्म होने का समय शुरू होने के बाद का होना चाहिए।",
-    "Enter a valid 10-digit mobile number.": "सही 10 अंकों का मोबाइल नंबर डालें।",
-    "No connection. Please try again.": "कनेक्शन नहीं है। कृपया फिर कोशिश करें।",
-    "Could not save. Please try again.": "सेव नहीं हो पाया। कृपया फिर कोशिश करें।",
-    "Enter a valid email address.": "सही ईमेल पता डालें।",
-    "Use at least 8 characters with a letter and a number.": "कम से कम 8 अक्षर, जिनमें एक अक्षर और एक संख्या हो।",
-    "Passwords do not match.": "दोनों पासवर्ड एक जैसे नहीं हैं।",
-    "This email is already registered. Please log in.": "यह ईमेल पहले से रजिस्टर्ड है। कृपया लॉग इन करें।",
-    "Email or password is incorrect.": "ईमेल या पासवर्ड गलत है।",
-    "Too many attempts. Please try again later.": "बहुत ज़्यादा कोशिशें हो गईं। कृपया बाद में फिर कोशिश करें।",
-    "Too many attempts. Try again in 15 minutes.": "बहुत ज़्यादा कोशिशें हो गईं। 15 मिनट बाद फिर कोशिश करें।",
-    "Enter your password.": "पासवर्ड डालें।",
-    "Type your board, e.g. Punjab Board (PSEB)": "अपना बोर्ड लिखें, जैसे पंजाब बोर्ड (PSEB)",
-    "Type your medium, e.g. Punjabi": "अपना माध्यम लिखें, जैसे पंजाबी",
-    "Type the subject, e.g. Economics": "विषय लिखें, जैसे अर्थशास्त्र",
-    "10-digit mobile number": "10 अंकों का मोबाइल नंबर",
-    "First name is enough": "सिर्फ़ पहला नाम काफ़ी है",
-    "e.g. Government Senior Secondary School, Phase 5": "जैसे गवर्नमेंट सीनियर सेकेंडरी स्कूल, फेज़ 5"
-  };
-  var lang = 'en', thanksName = '', leadPhone = '', welcomeName = '', welcomeStatus = '';
-  var textNodes = [], phNodes = [];
-  (function collect() {
-    var w = document.createTreeWalker($('.app'), NodeFilter.SHOW_TEXT, null), n;
-    while ((n = w.nextNode())) {
-      if (!n.nodeValue.trim()) continue;
-      var p = n.parentElement;
-      if (!p || p.closest('[data-dyn]')) continue;
-      textNodes.push({ node: n, orig: n.nodeValue });
+// chips
+$('#main').addEventListener('click', function (e) {
+  var chip = e.target.closest('.chip'); if (!chip) return;
+  var g = chip.parentNode, k = g.dataset.k, f = defOf(k), v = chip.dataset.v, on = chip.getAttribute('aria-pressed') === 'true';
+  if (g.dataset.mode === 'single') {
+    $$('.chip', g).forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+    if (!on) chip.setAttribute('aria-pressed', 'true');
+  } else {
+    if (!on && f.ex) {
+      if (v === f.ex) $$('.chip', g).forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+      else $$('.chip', g).forEach(function (c) { if (c.dataset.v === f.ex) c.setAttribute('aria-pressed', 'false'); });
     }
-    $$('input[placeholder]').forEach(function (el) { phNodes.push({ el: el, orig: el.getAttribute('placeholder') }); });
-  })();
-  function tr(s) { return (lang === 'hi' && HI[s]) ? HI[s] : s; }
-  function L(en, hi) { return lang === 'hi' ? hi : en; }
-  function markInvalid(id, bad) { $('#' + id).classList.toggle('invalid', !!bad); }
-  function updateThanks() {
-    var n = thanksName;
-    $('#thanksSub').textContent = lang === 'hi'
-      ? (n ? n + ', हमें आपके जवाब मिल गए हैं।' : 'हमें आपके जवाब मिल गए हैं।')
-      : (n ? "We've received your answers, " + n + '.' : "We've received your answers.");
+    chip.setAttribute('aria-pressed', on ? 'false' : 'true');
   }
-  function updateWelcome() {
-    $('#welcomeSub').textContent = welcomeName ? L('Hi, ' + welcomeName + '.', welcomeName + ', नमस्ते।') : '';
-    var s = $('#statusLine');
-    s.hidden = !welcomeStatus;
-    s.textContent = welcomeStatus ? L('Latest update: ', 'ताज़ा अपडेट: ') + welcomeStatus : '';
+  S[k] = $$('.chip[aria-pressed=true]', g).map(function (c) { return c.dataset.v; });
+  var ob = $('#ob_' + k);
+  if (ob) {
+    var show = k === 'timing' ? S[k][0] === 'Specific time' : S[k].indexOf('Other') > -1;
+    ob.classList.toggle('show', show);
+    if (show && !on) { var inp = $('input', ob); if (inp) inp.focus({ preventScroll: true }); }
   }
-  function eyeLabels() {
-    $$('.eye').forEach(function (b) {
-      b.textContent = $('#' + b.dataset['for']).type === 'password' ? L('Show', 'दिखाएँ') : L('Hide', 'छिपाएँ');
-    });
-  }
-  function applyLang() {
-    textNodes.forEach(function (o) {
-      var key = o.orig.trim();
-      o.node.nodeValue = (lang === 'hi' && HI[key]) ? o.orig.replace(key, HI[key]) : o.orig;
-    });
-    phNodes.forEach(function (o) { o.el.setAttribute('placeholder', tr(o.orig)); });
-    document.documentElement.lang = lang;
-    document.title = L('CeK Classes · Find Your Batch', 'CeK Classes · अपना बैच चुनें');
-    $('#langEn').setAttribute('aria-pressed', String(lang === 'en'));
-    $('#langHi').setAttribute('aria-pressed', String(lang === 'hi'));
-    Object.keys(errKeys).forEach(function (id) { setErr(errKeys[id], id); });
-    updateThanks();
-    updateWelcome();
-    eyeLabels();
-    render(true);
-  }
-  function setLang(l) {
-    lang = l;
-    try { localStorage.setItem('cekLang', l); } catch (e) {}
-    applyLang();
-  }
-  $('#langEn').addEventListener('click', function () { setLang('en'); });
-  $('#langHi').addEventListener('click', function () { setLang('hi'); });
+  g.classList.remove('invalid'); setErr(k, '');
+});
+$('#main').addEventListener('input', function (e) {
+  var t = e.target; t.classList.remove('invalid');
+  var k = t.id.replace(/^o_/, '').replace(/^t(From|To)$/, 'timing'); setErr(k, ''); 
+});
 
-  // ===== Navigation =====
-  function render(keepScroll) {
-    $$('.step').forEach(function (s) { s.classList.toggle('active', Number(s.dataset.step) === current); });
-    var inQuestions = current >= 1 && current <= TOTAL_STEPS;
-    $('#progress').classList.toggle('on', inQuestions);
-    $('#actions').hidden = current === 7 || current === 9;
-    $('#backBtn').hidden = !(inQuestions || current === 6 || current === 8);
-    $('#loginBtn').hidden = current !== 0;
-    if (inQuestions) {
-      var pct = Math.round(current / TOTAL_STEPS * 100);
-      $('#stepLabel').textContent = L('Step ' + current + ' of ' + TOTAL_STEPS, 'चरण ' + current + ' / ' + TOTAL_STEPS);
-      $('#pctLabel').textContent = L(pct + '% complete', pct + '% पूरा');
-      $$('.seg').forEach(function (s, idx) { s.classList.toggle('done', idx < current); });
-    }
-    var btn = $('#nextBtn');
-    if (!submitting) {
-      btn.textContent = current === 0 ? L('Start', 'शुरू करें')
-        : current === TOTAL_STEPS ? L('Submit', 'जमा करें')
-        : current === 6 ? L('Create account', 'अकाउंट बनाएँ')
-        : current === 8 ? L('Log in', 'लॉग इन')
-        : L('Continue', 'आगे बढ़ें');
-    }
-    $('#backBtn').textContent = current === 6 ? L('Skip for now', 'अभी छोड़ें') : L('Back', 'वापस');
-    if (!keepScroll) window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+// ===== Helpers =====
+function cleanPhone(raw) {
+  var d = String(raw || '').replace(/\D/g, '');
+  if (d.length === 12 && d.indexOf('91') === 0) d = d.slice(2);
+  if (d.length === 11 && d.charAt(0) === '0') d = d.slice(1);
+  return d;
+}
+function withOther(k) {
+  var t = ($('#o_' + k) ? $('#o_' + k).value : '').trim();
+  return (S[k] || []).map(function (v) { return v === 'Other' && t ? 'Other: ' + t : v; }).join(', ');
+}
+function fmt12(s) { if (!s) return ''; var p = s.split(':'), h = +p[0]; return (h % 12 || 12) + ':' + p[1] + ' ' + (h >= 12 ? 'PM' : 'AM'); }
+function timing() { return S.timing[0] === 'Specific time' ? 'Specific time: ' + fmt12($('#tFrom').value) + '–' + fmt12($('#tTo').value) : S.timing.join(', '); }
+function bad(el, k, msg) { if (el) el.classList.add('invalid'); setErr(k, msg); return el || true; }
 
-  function cleanPhone(raw) {
-    var d = String(raw || '').replace(/\D/g, '');
-    if (d.length === 12 && d.indexOf('91') === 0) d = d.slice(2);
-    if (d.length === 11 && d.charAt(0) === '0') d = d.slice(1);
-    return d;
-  }
-
-  // ===== Validation: every question is required =====
-  var RULES = {
-    1: [{ k: 'name', t: 'text', id: 'name', msg: 'Please enter the student name.' },
-        { k: 'class', t: 'chips' },
-        { k: 'board', t: 'chips', other: 'boardOther' },
-        { k: 'medium', t: 'chips', other: 'mediumOther' }],
-    2: [{ k: 'subjects', t: 'chips' },
-        { k: 'budget', t: 'chips' },
-        { k: 'demo', t: 'chips' },
-        { k: 'phone', t: 'phone' }],
-    3: [{ k: 'otherSubjects', t: 'chips', other: 'otherSubjectsOther' },
-        { k: 'worry', t: 'chips' },
-        { k: 'timing', t: 'time' },
-        { k: 'school', t: 'text', id: 'school', msg: 'Please enter the school name.' }]
-  };
-
-  function validate(step) {
-    var ok = true, first = null;
-    RULES[step].forEach(function (r) {
-      var msg = '', target = null;
-      if (r.t === 'text') {
-        if (!$('#' + r.id).value.trim()) { msg = r.msg; target = $('#' + r.id); }
-      } else if (r.t === 'phone') {
-        if (!/^[6-9]\d{9}$/.test(cleanPhone($('#phone').value))) { msg = 'Enter a valid 10-digit mobile number.'; target = $('#phone'); }
-      } else if (r.t === 'chips') {
-        var group = $('.chips[data-name="' + r.k + '"]');
-        if (!state[r.k].length) {
-          msg = group.dataset.mode === 'single' ? 'Please pick an option.' : 'Please pick at least one option.';
-          target = group; group.classList.add('invalid');
-        } else if (r.other && state[r.k].indexOf('Other') > -1 && !$('#' + r.other).value.trim()) {
-          msg = 'Please type it in the box.'; target = $('#' + r.other);
-        }
-      } else if (r.t === 'time') {
-        var g = $('.chips[data-name="timing"]');
-        if (!state.timing.length) {
-          msg = 'Please pick an option.'; target = g; g.classList.add('invalid');
-        } else if (state.timing[0] === 'Specific time') {
-          var from = $('#timeFrom').value, to = $('#timeTo').value;
-          if (!from || !to) { msg = 'Pick both start and end time.'; target = !from ? $('#timeFrom') : $('#timeTo'); }
-          else if (to <= from) { msg = 'End time must be after start time.'; target = $('#timeTo'); }
-        }
+// ===== Validation (every question required) =====
+function validate(step) {
+  var first = null;
+  Q[step].forEach(function (f) {
+    var el = null, k = f.k;
+    setErr(k, '');
+    if (f.t === 'text') { if (!$('#' + k).value.trim()) el = bad($('#' + k), k, f.msg); }
+    else if (f.t === 'phone') { if (!/^[6-9]\d{9}$/.test(cleanPhone($('#phone').value))) el = bad($('#phone'), k, 'Enter a valid 10-digit mobile number.'); }
+    else {
+      var g = $('.chips[data-k="' + k + '"]');
+      if (!S[k].length) { g.classList.add('invalid'); setErr(k, f.t === 'single' ? 'Please pick an option.' : 'Please pick at least one option.'); el = g; }
+      else if (f.oph && S[k].indexOf('Other') > -1 && !$('#o_' + k).value.trim()) el = bad($('#o_' + k), k, 'Please type it in the box.');
+      else if (k === 'timing' && S[k][0] === 'Specific time') {
+        var a = $('#tFrom').value, b = $('#tTo').value;
+        if (!a || !b) el = bad(!a ? $('#tFrom') : $('#tTo'), k, 'Pick both start and end time.');
+        else if (b <= a) el = bad($('#tTo'), k, 'End time must be after start time.');
       }
-      if (target && target.tagName === 'INPUT') target.classList.add('invalid');
-      setErr(msg, 'err-' + r.k);
-      if (msg) { ok = false; if (!first) first = target; }
-    });
-    if (first) {
-      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      if (first.tagName === 'INPUT') first.focus({ preventScroll: true });
     }
-    return ok;
-  }
-
-  $('#nextBtn').addEventListener('click', function () {
-    if (submitting) return;
-    if (current === 6) { createAccount(); return; }
-    if (current === 8) { loginUser(); return; }
-    if (current >= 1 && current <= TOTAL_STEPS) {
-      if (!validate(current)) return;
-      if (current === 2) sendLead(false, function () {}, function () {});   // save the important answers now
-      if (current === TOTAL_STEPS) { submit(); return; }
-    }
-    current++; render();
+    if (el && !first) first = el;
   });
-  $('#backBtn').addEventListener('click', function () {
-    if (submitting) return;
-    if (current === 6) { goThanks(false); return; }
-    if (current === 8) { current = 0; render(); return; }
-    if (current > 0) { current--; render(); }
-  });
-  $('#loginBtn').addEventListener('click', function () { current = 8; render(); });
-  $('#logoutBtn').addEventListener('click', function () { current = 0; render(); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); $('#nextBtn').click(); }
-  });
+  if (first && first !== true) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (first.tagName === 'INPUT') first.focus({ preventScroll: true }); }
+  return !first;
+}
 
-  // ===== Saving to the Sheet =====
-  function withOther(list, otherId) {
-    var txt = ($('#' + otherId).value || '').trim();
-    return list.map(function (v) { return v === 'Other' && txt ? 'Other: ' + txt : v; }).join(', ');
+// ===== Reset: a brand-new form and a brand-new Lead ID =====
+function resetForm() {
+  Object.keys(S).forEach(function (k) { S[k] = []; });
+  $$('.chip').forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+  $$('.chips').forEach(function (g) { g.classList.remove('invalid'); });
+  $$('.ob').forEach(function (b) { b.classList.remove('show'); });
+  $$('input').forEach(function (i) { i.value = ''; i.classList.remove('invalid'); if (i.closest('.pw')) i.type = 'password'; });
+  $$('.err').forEach(function (e) { e.textContent = ''; });
+  eyes();
+  leadId = newId(); submitting = false; thanksName = '';
+}
+function eyes() { $$('.eye').forEach(function (b) { b.textContent = $('#' + b.dataset.for).type === 'password' ? 'Show' : 'Hide'; }); }
+$$('.eye').forEach(function (b) { b.addEventListener('click', function () { var i = $('#' + b.dataset.for); i.type = i.type === 'password' ? 'text' : 'password'; eyes(); }); });
+
+// ===== Navigation + history (phone Back button stays inside the form) =====
+function render() {
+  $$('.step').forEach(function (s) { s.classList.toggle('active', +s.dataset.step === current); });
+  var inQ = current >= 1 && current <= TOTAL;
+  $('#progress').classList.toggle('on', inQ);
+  $('#actions').hidden = current === 5 || current === 7;
+  $('#backBtn').hidden = !(inQ || current === 4 || current === 6);
+  $('#loginBtn').hidden = current !== 0;
+  if (inQ) {
+    var pct = Math.round(current / TOTAL * 100);
+    $('#stepLbl').textContent = 'Step ' + current + ' of ' + TOTAL; $('#pctLbl').textContent = pct + '% complete';
+    $$('.seg').forEach(function (s, i) { s.classList.toggle('done', i < current); });
   }
-  function fmt12(hhmm) {
-    if (!hhmm) return '';
-    var p = hhmm.split(':'), h = Number(p[0]), ap = h >= 12 ? 'PM' : 'AM';
-    h = h % 12 || 12;
-    return h + ':' + p[1] + ' ' + ap;
+  if (!submitting) $('#nextBtn').textContent = ['Start', 'Continue', 'Continue', 'Submit', 'Create account', '', 'Log in'][current] || '';
+  $('#backBtn').textContent = current === 4 ? 'Skip for now' : 'Back';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function go(n) { current = n; render(); try { history.pushState({ s: n }, ''); } catch (e) {} }
+try { history.replaceState({ s: 0 }, ''); } catch (e) {}
+window.addEventListener('popstate', function () {
+  if (submitting) { try { history.pushState({ s: current }, ''); } catch (e) {} return; }
+  if (current >= 1 && current <= TOTAL) current--;
+  else if (current === 4) { finishFlow(false); return; }
+  else if (current >= 5) { resetForm(); current = 0; }
+  else if (current === 6) current = 0;
+  render();
+});
+
+$('#nextBtn').addEventListener('click', function () {
+  if (submitting) return;
+  if (current === 4) return createAccount();
+  if (current === 6) return loginUser();
+  if (current >= 1 && current <= TOTAL) {
+    if (!validate(current)) return;
+    if (current === 2) saveLead(false, function () {}, function () {});   // keep the important answers early
+    if (current === TOTAL) return submit();
   }
-  function timingValue() {
-    if (state.timing[0] === 'Specific time') {
-      return 'Specific time: ' + fmt12($('#timeFrom').value) + ' – ' + fmt12($('#timeTo').value);
-    }
-    return state.timing.join(', ');
-  }
+  go(current + 1);
+});
+$('#backBtn').addEventListener('click', function () {
+  if (submitting) return;
+  if (current === 4) return finishFlow(false);
+  if (current === 6) { current = 0; return render(); }
+  if (current > 0) { current--; render(); }
+});
+$('#loginBtn').addEventListener('click', function () { go(6); });
+$('#newBtn').addEventListener('click', function () { resetForm(); current = 0; render(); });
+$('#logoutBtn').addEventListener('click', function () { resetForm(); current = 0; render(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); $('#nextBtn').click(); } });
 
-  function buildPayload(complete) {
-    return {
-      leadId: leadId,
-      complete: complete,
-      studentClass: state.class.join(', '),
-      board: withOther(state.board, 'boardOther'),
-      medium: withOther(state.medium, 'mediumOther'),
-      subjects: state.subjects.join(', '),
-      otherSubjects: withOther(state.otherSubjects, 'otherSubjectsOther'),
-      worry: state.worry.join(', '),
-      timing: timingValue(),
-      budget: state.budget.join(', '),
-      demo: state.demo.join(', '),
-      phone: cleanPhone($('#phone').value),
-      name: $('#name').value.trim(),
-      school: $('#school').value.trim(),
-      source: /^[\w-]{1,30}$/.test(window.CEK_SRC || '') ? window.CEK_SRC : 'whatsapp',
-      language: lang,
-      website: $('#hp_field').value
-    };
-  }
+// ===== Server calls =====
+function api(action, data, ok, fail) {
+  if (!CEK_API) { console.log('Preview:', action, data); setTimeout(function () { ok({ success: true }); }, 300); return; }
+  var done = false, timer = setTimeout(function () { if (!done) { done = true; fail(); } }, 25000);
+  fetch(CEK_API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: action, data: data }) })
+    .then(function (r) { return r.json(); })
+    .then(function (res) { if (!done) { done = true; clearTimeout(timer); ok(res); } })
+    .catch(function () { if (!done) { done = true; clearTimeout(timer); fail(); } });
+}
+function payload(complete) {
+  return { leadId: leadId, complete: complete, studentClass: S.class.join(', '), board: withOther('board'), medium: withOther('medium'),
+    subjects: S.subjects.join(', '), otherSubjects: withOther('otherSubjects'), worry: S.worry.join(', '), timing: timing(),
+    budget: S.budget.join(', '), demo: S.demo.join(', '), phone: cleanPhone($('#phone').value), name: $('#name').value.trim(),
+    school: $('#school').value.trim(), source: SRC, language: 'en', website: $('#hp').value };
+}
+function saveLead(complete, ok, fail) { var p = payload(complete); api('submitLead', p, ok, fail); return p; }
 
-  function apiReady() { return !!window.CEK_API; }
+function submit() {
+  submitting = true;
+  var btn = $('#nextBtn'); btn.disabled = true; btn.textContent = 'Sending…';
+  var p = saveLead(true, function (res) {
+    btn.disabled = false; submitting = false;
+    if (res && res.success) { thanksName = p.name.split(' ')[0]; go(4); }
+    else { render(); setErr('school', (res && res.error) || 'Could not save. Please try again.'); }
+  }, function () { btn.disabled = false; submitting = false; render(); setErr('school', 'No connection. Please try again.'); });
+}
 
-  // Sends a request to the Apps Script web app and returns its JSON answer.
-  // text/plain keeps it a "simple" request, so browsers (including iPhone Safari) don't block it.
-  function api(action, data, ok, fail) {
-    if (!apiReady()) {
-      // Preview mode (no web app URL set): pretend the server said yes
-      console.log('Preview mode:', action, data);
-      setTimeout(function () { ok({ success: true, name: thanksName, status: '' }); }, action === 'submitLead' && !data.complete ? 0 : 450);
-      return;
-    }
-    var done = false;
-    var timer = setTimeout(function () { if (!done) { done = true; fail(); } }, 25000);
-    fetch(window.CEK_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: action, data: data })
-    })
-      .then(function (r) { return r.json(); })
-      .then(function (res) { if (done) return; done = true; clearTimeout(timer); ok(res); })
-      .catch(function () { if (done) return; done = true; clearTimeout(timer); fail(); });
-  }
+// Lead is saved; now (optionally) the account, then the thank-you screen with a fresh, empty form behind it
+function finishFlow(accountMade) {
+  var name = thanksName;
+  resetForm();
+  $('#thanksSub').textContent = name ? "We've received your answers, " + name + '.' : "We've received your answers.";
+  $('#demoNote').hidden = !!CEK_API;
+  $('#acctNote').hidden = !accountMade;
+  if (TEACHER_WHATSAPP) { var wa = $('#waBtn'); wa.href = 'https://wa.me/' + TEACHER_WHATSAPP + '?text=' + encodeURIComponent('Hi, I filled the CeK crash course form.'); wa.hidden = false; }
+  current = 5; render();
+  try { history.replaceState({ s: 5 }, ''); } catch (e) {}
+}
 
-  // One row per student: the first save creates it, later saves update the same row
-  function sendLead(complete, onOk, onFail) {
-    var payload = buildPayload(complete);
-    api('submitLead', payload, onOk, onFail);
-    return payload;
-  }
-
-  function submit() {
-    submitting = true;
-    var btn = $('#nextBtn');
-    btn.disabled = true; btn.textContent = L('Sending…', 'भेज रहे हैं…');
-    var payload = sendLead(true, function (res) {
-      btn.disabled = false;
-      if (res && res.success) { finish(payload, !apiReady()); }
-      else { submitting = false; render(true); setErr((res && res.error) || 'Could not save. Please try again.', 'err-school'); }
-    }, function () {
-      submitting = false; btn.disabled = false; render(true);
-      setErr('No connection. Please try again.', 'err-school');
-    });
-  }
-
-  // Lead is saved first, then the student is offered an account (so no lead is lost)
-  function finish(payload, demo) {
-    submitting = false;
-    var first = payload.name ? payload.name.split(' ')[0] : '';
-    thanksName = first; updateThanks();
-    leadPhone = payload.phone;
-    $('#demoNote').hidden = !demo;
-    current = 6; render();
-  }
-
-  function goThanks(accountMade) {
-    if (TEACHER_WHATSAPP) {
-      var wa = $('#waBtn');
-      wa.href = 'https://wa.me/' + TEACHER_WHATSAPP + '?text=' + encodeURIComponent('Hi, I filled the CeK crash course form.');
-      wa.style.display = 'block';
-    }
-    $('#acctNote').hidden = !accountMade;
-    current = 7; render();
-  }
-
-  // ===== Account: sign up and log in =====
-  var EMAIL_RE = /^[A-Za-z0-9][^\s@]*@[^\s@]+\.[^\s@]{2,}$/;
-  function pwOk(p) { return p.length >= 8 && p.length <= 64 && /[A-Za-z]/.test(p) && /\d/.test(p); }
-
-  function callServer(fn, arg, ok, fail) { api(fn, arg, ok, fail); }
-
-  function createAccount() {
-    var email = $('#email').value.trim().toLowerCase();
-    var pw = $('#pw').value, pw2 = $('#pw2').value;
-    var okEmail = EMAIL_RE.test(email) && email.length <= 100;
-    var okPw = pwOk(pw), okSame = pw === pw2;
-    markInvalid('email', !okEmail); markInvalid('pw', !okPw); markInvalid('pw2', okPw && !okSame);
-    setErr(okEmail ? '' : 'Enter a valid email address.', 'emailErr');
-    setErr(okPw ? '' : 'Use at least 8 characters with a letter and a number.', 'pwErr');
-    setErr(!okPw || okSame ? '' : 'Passwords do not match.', 'pw2Err');
-    if (!okEmail) { $('#email').focus(); return; }
-    if (!okPw) { $('#pw').focus(); return; }
-    if (!okSame) { $('#pw2').focus(); return; }
-
-    var btn = $('#nextBtn');
-    submitting = true; btn.disabled = true; btn.textContent = L('Creating…', 'बन रहा है…');
-    callServer('createAccount', { email: email, password: pw, leadId: leadId }, function (res) {
-      submitting = false; btn.disabled = false;
-      if (res && res.success) { $('#pw').value = ''; $('#pw2').value = ''; goThanks(true); }
-      else { render(true); setErr((res && res.error) || 'Could not save. Please try again.', 'emailErr'); }
-    }, function () {
-      submitting = false; btn.disabled = false; render(true);
-      setErr('No connection. Please try again.', 'emailErr');
-    });
-  }
-
-  function loginUser() {
-    var email = $('#loginEmail').value.trim().toLowerCase(), pw = $('#loginPw').value;
-    var okEmail = EMAIL_RE.test(email);
-    markInvalid('loginEmail', !okEmail); markInvalid('loginPw', !pw);
-    if (!okEmail) { setErr('Enter a valid email address.', 'loginErr'); $('#loginEmail').focus(); return; }
-    if (!pw) { setErr('Enter your password.', 'loginErr'); $('#loginPw').focus(); return; }
-    setErr('', 'loginErr');
-
-    var btn = $('#nextBtn');
-    submitting = true; btn.disabled = true; btn.textContent = L('Checking…', 'जाँच रहे हैं…');
-    callServer('loginUser', { email: email, password: pw }, function (res) {
-      submitting = false; btn.disabled = false;
-      if (res && res.success) {
-        $('#loginPw').value = '';
-        welcomeName = res.name || ''; welcomeStatus = res.status || '';
-        updateWelcome(); current = 9; render();
-      } else { render(true); setErr((res && res.error) || 'Email or password is incorrect.', 'loginErr'); }
-    }, function () {
-      submitting = false; btn.disabled = false; render(true);
-      setErr('No connection. Please try again.', 'loginErr');
-    });
-  }
-
-  $$('.eye').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var i = $('#' + b.dataset['for']);
-      i.type = i.type === 'password' ? 'text' : 'password';
-      eyeLabels();
-    });
-  });
-  [['email', 'emailErr'], ['pw', 'pwErr'], ['pw2', 'pw2Err'], ['loginEmail', 'loginErr'], ['loginPw', 'loginErr']].forEach(function (pair) {
-    $('#' + pair[0]).addEventListener('input', function () { this.classList.remove('invalid'); setErr('', pair[1]); });
-  });
-
-  // Start language: ?lang=hi link > remembered choice > phone language
-  (function initLang() {
-    var forced = /^(hi|en)$/.test(window.CEK_LANG || '') ? window.CEK_LANG : '';
-    var saved = '';
-    try { saved = localStorage.getItem('cekLang') || ''; } catch (e) {}
-    var phoneHi = /^hi/i.test(navigator.language || '');
-    lang = forced || saved || (phoneHi ? 'hi' : 'en');
-    applyLang();
-  })();
+var EMAIL_RE = /^[A-Za-z0-9][^\s@]*@[^\s@]+\.[^\s@]{2,}$/;
+function pwOk(p) { return p.length >= 8 && p.length <= 64 && /[A-Za-z]/.test(p) && /\d/.test(p); }
+function createAccount() {
+  var email = $('#email').value.trim().toLowerCase(), pw = $('#pw').value, pw2 = $('#pw2').value;
+  var e1 = EMAIL_RE.test(email), e2 = pwOk(pw), e3 = pw === pw2;
+  $('#email').classList.toggle('invalid', !e1); $('#pw').classList.toggle('invalid', !e2); $('#pw2').classList.toggle('invalid', e2 && !e3);
+  $('#emailErr').textContent = e1 ? '' : 'Enter a valid email address.';
+  $('#pwErr').textContent = e2 ? '' : 'Use at least 8 characters with a letter and a number.';
+  $('#pw2Err').textContent = !e2 || e3 ? '' : 'Passwords do not match.';
+  if (!e1) return $('#email').focus(); if (!e2) return $('#pw').focus(); if (!e3) return $('#pw2').focus();
+  submitting = true; var btn = $('#nextBtn'); btn.disabled = true; btn.textContent = 'Creating…';
+  api('createAccount', { email: email, password: pw, leadId: leadId }, function (res) {
+    btn.disabled = false; submitting = false;
+    if (res && res.success) finishFlow(true); else { render(); $('#emailErr').textContent = (res && res.error) || 'Could not save. Please try again.'; }
+  }, function () { btn.disabled = false; submitting = false; render(); $('#emailErr').textContent = 'No connection. Please try again.'; });
+}
+function loginUser() {
+  var email = $('#lEmail').value.trim().toLowerCase(), pw = $('#lPw').value, err = $('#loginErr');
+  if (!EMAIL_RE.test(email)) { err.textContent = 'Enter a valid email address.'; return $('#lEmail').focus(); }
+  if (!pw) { err.textContent = 'Enter your password.'; return $('#lPw').focus(); }
+  err.textContent = ''; submitting = true; var btn = $('#nextBtn'); btn.disabled = true; btn.textContent = 'Checking…';
+  api('loginUser', { email: email, password: pw }, function (res) {
+    btn.disabled = false; submitting = false;
+    if (res && res.success) {
+      $('#lPw').value = '';
+      $('#welcomeSub').textContent = res.name ? 'Hi, ' + res.name + '.' : '';
+      $('#statusLine').hidden = !res.status; $('#statusLine').textContent = res.status ? 'Latest update: ' + res.status : '';
+      current = 7; render();
+    } else { render(); err.textContent = (res && res.error) || 'Email or password is incorrect.'; }
+  }, function () { btn.disabled = false; submitting = false; render(); err.textContent = 'No connection. Please try again.'; });
+}
+render();
 })();
 </script>
 </body>
