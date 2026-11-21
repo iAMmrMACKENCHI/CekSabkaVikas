@@ -99,6 +99,7 @@ button:focus-visible{outline:3px solid rgba(8,8,8,.35);outline-offset:2px}
     <div class="actions static"><button type="button" class="btn ghost" id="logoutBtn">Log out</button></div></div></section>
 </main>
 <div class="actions" id="actions">
+  <div class="err" id="formErr" role="alert" style="text-align:center"></div>
   <button type="button" class="btn primary" id="nextBtn">Start</button>
   <button type="button" class="btn ghost" id="backBtn" hidden>Back</button>
   <button type="button" class="btn ghost" id="loginBtn">Already registered? Log in</button>
@@ -162,6 +163,7 @@ function build() {
 }
 build();
 
+function formErr(msg) { $('#formErr').textContent = msg || ''; }
 function setErr(k, msg) { var e = $('#e_' + k); if (e) e.textContent = msg || ''; }
 function defOf(k) { for (var n in Q) for (var i = 0; i < Q[n].length; i++) if (Q[n][i].k === k) return Q[n][i]; }
 
@@ -248,6 +250,7 @@ $$('.eye').forEach(function (b) { b.addEventListener('click', function () { var 
 
 // ===== Navigation + history (phone Back button stays inside the form) =====
 function render() {
+  formErr('');
   $$('.step').forEach(function (s) { s.classList.toggle('active', +s.dataset.step === current); });
   var inQ = current >= 1 && current <= TOTAL;
   $('#progress').classList.toggle('on', inQ);
@@ -316,11 +319,13 @@ function saveLead(complete, ok, fail) { var p = payload(complete); api('submitLe
 function submit() {
   submitting = true;
   var btn = $('#nextBtn'); btn.disabled = true; btn.textContent = 'Sending…';
-  var p = saveLead(true, function (res) {
+  var p;
+  try { p = saveLead(true, function (res) {
     btn.disabled = false; submitting = false;
     if (res && res.success) { thanksName = p.name.split(' ')[0]; go(4); }
-    else { render(); setErr('school', (res && res.error) || 'Could not save. Please try again.'); }
-  }, function () { btn.disabled = false; submitting = false; render(); setErr('school', 'No connection. Please try again.'); });
+    else { render(); formErr((res && res.error) || 'Could not save. Please try again.'); }
+  }, function () { btn.disabled = false; submitting = false; render(); formErr('No connection. Please try again.'); }); }
+  catch (err) { btn.disabled = false; submitting = false; render(); formErr('Error: ' + err.message); }
 }
 
 // Lead is saved; now (optionally) the account, then the thank-you screen with a fresh, empty form behind it
